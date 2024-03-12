@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:hci/DurationPicker.dart';
-import 'package:intl/intl.dart';
 
 class NewTaskPage extends StatelessWidget{
   const NewTaskPage({super.key});
@@ -25,22 +24,36 @@ class Task extends StatefulWidget{
 
 class _TaskState extends State<Task>{
 
-  DateTime selectedDate = DateTime.now();
-  TextEditingController dateController = TextEditingController();
+  DateTime? selectedDate;
+  DateTime? currentDate;
+  bool isDateTileExpanded = false;
 
-  Future<void> _selectDate(BuildContext context) async {
-    final DateTime? picked = await showDatePicker(
-      context: context,
-      initialDate: selectedDate,
-      firstDate: DateTime.now(),
-      lastDate: DateTime(2100),
-    ) ;
-    if(picked != null && picked!= selectedDate ){
-      setState(() {
-        selectedDate = picked;
-        dateController.text = DateFormat('dd.MM.yy').format(picked);
-      });
-    }
+  void _onApplyButtonPressed() {
+    setState(() {
+      isDateTileExpanded = false;
+      selectedDate = currentDate;
+    });
+  }
+
+  Widget _buildDatePicker() {
+    return Column(
+      children: [
+       CalendarDatePicker(
+        initialDate: selectedDate ?? DateTime.now(),
+        firstDate: DateTime.now(),
+        lastDate: DateTime(2100),
+        onDateChanged: (DateTime value) {
+          setState(() {
+            currentDate = value;
+          });
+        },
+      ),
+        ElevatedButton(
+          onPressed: _onApplyButtonPressed,
+          child: const Text('Apply'),
+        ),
+      ],
+    );
   }
 
   @override
@@ -69,47 +82,19 @@ class _TaskState extends State<Task>{
             minLines: 4,
             maxLines: 6,
           ),
-        TextFormField(
-          controller: dateController,
-          decoration: InputDecoration(
-            labelText: 'Select a day',
-            suffixIcon: IconButton(
-              icon: Icon(Icons.calendar_today),
-              onPressed: () => _selectDate(context),
-            ),
+        ListTile(
+          title: Text(selectedDate == null ? 'Date' : 'Date:  ${'${selectedDate!.toLocal()}'.split(' ')[0]}'),
+          trailing: Icon(
+            isDateTileExpanded ? Icons.expand_less : Icons.expand_more,
           ),
+          onTap: () {
+            setState(() {
+              isDateTileExpanded = !isDateTileExpanded;
+            });
+          },
         ),
-        ExpansionTile(
-          title: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              Text('Time'),
-              Text('$selectedDate.toLocal()}'.split(' ')[0],
-              )
-
+        if (isDateTileExpanded) _buildDatePicker(),
       ]
-    ),
-          leading: Icon(Icons.schedule),
-          children: <Widget>[
-            ListTile(
-              title: Text('Select Time'),
-              onTap: () => _showDurationPicker(),
-            ),
-            ],
-        ),
-      ]
-    );
-  }
-
-  Widget _buildTaskOption({required String title,required IconData icon, required VoidCallback onTap}){
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: ListTile(
-      leading : Icon(icon),
-      title: Text(title),
-      trailing: const Icon(Icons.arrow_drop_down),
-      onTap: onTap,
-      ),
     );
   }
 
