@@ -1,0 +1,4 @@
+class DropDownField{
+    String name;
+    List<String>
+}
