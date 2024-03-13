@@ -10,6 +10,24 @@ class NewTaskPage extends StatelessWidget{
       home:Scaffold(
         appBar: AppBar(title: const Text('Task List Page'),),
         body: const Task(),
+        persistentFooterButtons: [
+          Container(
+            width: MediaQuery.of(context).size.width,
+            child: ElevatedButton(
+              onPressed: () {
+                // Define the action when the button is pressed
+                print('Add Task');
+              },
+              style: ElevatedButton.styleFrom(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(40), // Ensures the button is square-edged
+                ),
+                minimumSize: Size.fromHeight(50), // Set the button's height
+              ),
+              child: Text('Add Task'),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -176,7 +194,7 @@ class _TaskState extends State<Task>{
             ),
           ]
         ),
-      ]
+      ],
     );
   }
 
