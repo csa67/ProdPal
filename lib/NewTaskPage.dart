@@ -27,6 +27,7 @@ class _TaskState extends State<Task>{
   DateTime? selectedDate;
   DateTime? currentDate;
   bool isDateTileExpanded = false;
+  int _selectedValue = 1;
 
   void _onApplyButtonPressed() {
     setState(() {
@@ -84,6 +85,7 @@ class _TaskState extends State<Task>{
           ),
         ListTile(
           title: Text(selectedDate == null ? 'Date' : 'Date:  ${'${selectedDate!.toLocal()}'.split(' ')[0]}'),
+          leading: const Icon(Icons.calendar_today),
           trailing: Icon(
             isDateTileExpanded ? Icons.expand_less : Icons.expand_more,
           ),
@@ -94,6 +96,86 @@ class _TaskState extends State<Task>{
           },
         ),
         if (isDateTileExpanded) _buildDatePicker(),
+        ExpansionTile(
+          title: Text('Repeat'),
+          leading: Icon(Icons.repeat),
+          children: <Widget>[
+              RadioListTile(
+                  title: Text('Never'),
+                  value: 1,
+                  groupValue: _selectedValue,
+                  onChanged: (value){
+                    setState(() {
+                      _selectedValue = value!;
+                    });
+                  }
+              ),
+            RadioListTile(
+                title: Text('Daily'),
+                value: 2,
+                groupValue: _selectedValue,
+                onChanged: (value){
+                  setState(() {
+                    _selectedValue = value!;
+                  });
+                }
+            ),
+            RadioListTile(
+                title: Text('Weekdays'),
+                value: 3,
+                groupValue: _selectedValue,
+                onChanged: (value){
+                  setState(() {
+                    _selectedValue = value!;
+                  });
+                }
+            ),
+            RadioListTile(
+                title: Text('Weekend'),
+                value: 4,
+                groupValue: _selectedValue,
+                onChanged: (value){
+                  setState(() {
+                    _selectedValue = value!;
+                  });
+                }
+            ),
+            RadioListTile(
+                title: Text('Weekly'),
+                value: 5,
+                groupValue: _selectedValue,
+                onChanged: (value){
+                  setState(() {
+                    _selectedValue = value!;
+                  });
+                }
+            ),
+            RadioListTile(
+                title: Text('Monthly'),
+                value: 6,
+                groupValue: _selectedValue,
+                onChanged: (value){
+                  setState(() {
+                    _selectedValue = value!;
+                  });
+                }
+            ),
+            RadioListTile(
+                title: Text('Custom'),
+                value: 7,
+                groupValue: _selectedValue,
+                onChanged: (value){
+                  setState(() {
+                    _selectedValue = value!;
+                  });
+                }
+            ),
+            ElevatedButton(
+              onPressed: _onApplyButtonPressed,
+              child: const Text('Confirm'),
+            ),
+          ]
+        ),
       ]
     );
   }
