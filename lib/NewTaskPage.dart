@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hci/DurationPicker.dart';
+import 'package:hci/boxBreathingAnimation.dart';
 
 class NewTaskPage extends StatelessWidget{
   const NewTaskPage({super.key});
@@ -16,7 +17,7 @@ class NewTaskPage extends StatelessWidget{
             child: ElevatedButton(
               onPressed: () {
                 // Define the action when the button is pressed
-                print('Add Task');
+                Navigator.push(context, MaterialPageRoute(builder: (context) => BoxBreathing()),);
               },
               style: ElevatedButton.styleFrom(
                 shape: RoundedRectangleBorder(
