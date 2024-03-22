@@ -9,14 +9,14 @@ class CardView extends StatelessWidget{
     return MaterialApp(
       home:Scaffold(
         appBar: AppBar(title: const Text('Task List Page'),),
-        body: TasksList(),
+        body: const TasksList(),
           ),
         );
   }
 }
 
 class TasksList extends StatefulWidget {
-  TasksList({super.key});
+  const TasksList({super.key});
 
   @override
   State<TasksList> createState() => _TasksListState();
@@ -89,7 +89,7 @@ class TaskCard extends StatelessWidget{
         child: InkWell(
           splashColor: Colors.deepOrange.withAlpha(30),
           onTap: (){
-            Navigator.push(context, MaterialPageRoute(builder: (context) => NewTaskPage()),);
+            Navigator.push(context, MaterialPageRoute(builder: (context) => const NewTaskPage()),);
           },
           child: const Padding(
               padding: EdgeInsets.all(16.0),

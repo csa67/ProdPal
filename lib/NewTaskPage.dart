@@ -12,20 +12,20 @@ class NewTaskPage extends StatelessWidget{
         appBar: AppBar(title: const Text('Task List Page'),),
         body: const Task(),
         persistentFooterButtons: [
-          Container(
+          SizedBox(
             width: MediaQuery.of(context).size.width,
             child: ElevatedButton(
               onPressed: () {
                 // Define the action when the button is pressed
-                Navigator.push(context, MaterialPageRoute(builder: (context) => BoxBreathing()),);
+                Navigator.push(context, MaterialPageRoute(builder: (context) => const BoxBreathing()),);
               },
               style: ElevatedButton.styleFrom(
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(40), // Ensures the button is square-edged
                 ),
-                minimumSize: Size.fromHeight(50), // Set the button's height
+                minimumSize: const Size.fromHeight(50), // Set the button's height
               ),
-              child: Text('Add Task'),
+              child: const Text('Add Task'),
             ),
           ),
         ],
@@ -116,11 +116,11 @@ class _TaskState extends State<Task>{
         ),
         if (isDateTileExpanded) _buildDatePicker(),
         ExpansionTile(
-          title: Text('Repeat'),
-          leading: Icon(Icons.repeat),
+          title: const Text('Repeat'),
+          leading: const Icon(Icons.repeat),
           children: <Widget>[
               RadioListTile(
-                  title: Text('Never'),
+                  title: const Text('Never'),
                   value: 1,
                   groupValue: _selectedValue,
                   onChanged: (value){
@@ -130,7 +130,7 @@ class _TaskState extends State<Task>{
                   }
               ),
             RadioListTile(
-                title: Text('Daily'),
+                title: const Text('Daily'),
                 value: 2,
                 groupValue: _selectedValue,
                 onChanged: (value){
@@ -140,7 +140,7 @@ class _TaskState extends State<Task>{
                 }
             ),
             RadioListTile(
-                title: Text('Weekdays'),
+                title: const Text('Weekdays'),
                 value: 3,
                 groupValue: _selectedValue,
                 onChanged: (value){
@@ -150,7 +150,7 @@ class _TaskState extends State<Task>{
                 }
             ),
             RadioListTile(
-                title: Text('Weekend'),
+                title: const Text('Weekend'),
                 value: 4,
                 groupValue: _selectedValue,
                 onChanged: (value){
@@ -160,7 +160,7 @@ class _TaskState extends State<Task>{
                 }
             ),
             RadioListTile(
-                title: Text('Weekly'),
+                title: const Text('Weekly'),
                 value: 5,
                 groupValue: _selectedValue,
                 onChanged: (value){
@@ -170,7 +170,7 @@ class _TaskState extends State<Task>{
                 }
             ),
             RadioListTile(
-                title: Text('Monthly'),
+                title: const Text('Monthly'),
                 value: 6,
                 groupValue: _selectedValue,
                 onChanged: (value){
@@ -180,7 +180,7 @@ class _TaskState extends State<Task>{
                 }
             ),
             RadioListTile(
-                title: Text('Custom'),
+                title: const Text('Custom'),
                 value: 7,
                 groupValue: _selectedValue,
                 onChanged: (value){

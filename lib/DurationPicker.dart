@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class DurationPicker extends StatefulWidget {
   final Function(int hour, int minute) onDurationSelected;
 
-  const DurationPicker({Key? key, required this.onDurationSelected}) : super(key: key);
+  const DurationPicker({super.key, required this.onDurationSelected});
 
   @override
   _DurationPickerState createState() => _DurationPickerState();
@@ -16,7 +16,7 @@ class _DurationPickerState extends State<DurationPicker> {
   @override
   Widget build(BuildContext context) {
     return Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-      Container(
+      SizedBox(
         height: 200,
         width: 100,
         child: ListView.builder(
@@ -46,7 +46,7 @@ class _DurationPickerState extends State<DurationPicker> {
       const Text(':',
           style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
       //Minutes
-      Container(
+      SizedBox(
         height: 200,
         width: 100,
         child: ListView.builder(
