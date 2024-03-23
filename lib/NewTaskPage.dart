@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hci/DurationPicker.dart';
-import 'package:hci/boxBreathingAnimation.dart';
+import 'package:hci/timerPage.dart';
 
 class NewTaskPage extends StatelessWidget{
   const NewTaskPage({super.key});
@@ -17,7 +17,7 @@ class NewTaskPage extends StatelessWidget{
             child: ElevatedButton(
               onPressed: () {
                 // Define the action when the button is pressed
-                Navigator.push(context, MaterialPageRoute(builder: (context) => const BoxBreathing()),);
+                Navigator.push(context, MaterialPageRoute(builder: (context) => const TimerPage()),);
               },
               style: ElevatedButton.styleFrom(
                 shape: RoundedRectangleBorder(
