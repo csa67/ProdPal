@@ -1,6 +1,3 @@
-# hci
-
-Productivity Pal
 
 ## Getting Started
 
