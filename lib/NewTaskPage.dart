@@ -7,9 +7,7 @@ class NewTaskPage extends StatelessWidget{
 
   @override
   Widget build(BuildContext context){
-    return MaterialApp(
-      home:Scaffold(
-        appBar: AppBar(title: const Text('Task List Page'),),
+    return Scaffold(
         body: const Task(),
         persistentFooterButtons: [
           SizedBox(
@@ -29,7 +27,6 @@ class NewTaskPage extends StatelessWidget{
             ),
           ),
         ],
-      ),
     );
   }
 }
