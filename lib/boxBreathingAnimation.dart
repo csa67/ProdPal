@@ -57,6 +57,7 @@ class _BreathingCircleState extends State<BreathingCircle> with SingleTickerProv
   late final Animation<double> _positionAnimation;
   BreathingState state = BreathingState.breatheIn;
   bool isStarted = false;
+  bool isPaused = false;
 
   @override
   void initState() {
@@ -92,19 +93,36 @@ class _BreathingCircleState extends State<BreathingCircle> with SingleTickerProv
   void _toggleStart() {
     if (!isStarted) {
       _controller.repeat();
-    } else {
+      isPaused = false;
+    } else if(!isPaused) {
       _controller.stop();
+      isPaused = true;
+    }else{
+      _controller.forward();
+      isPaused = false;
     }
 
     setState(() {
-      isStarted = !isStarted;
+      isStarted = !isStarted || isPaused;
     });
   }
 
+  void _pauseOrResume(){
+    setState(() {
+      if(_controller.isAnimating){
+        _controller.stop();
+        isPaused = true;
+      } else {
+        _controller.forward();
+        isPaused = false;
+      }
+    });
+  }
   void _resetAnimation() {
     _controller.reset();
     setState(() {
       isStarted = false;
+      isPaused = false;
     });
   }
 
@@ -212,19 +230,10 @@ class _BreathingCircleState extends State<BreathingCircle> with SingleTickerProv
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               ElevatedButton(
-                onPressed: () {
-                  if (_controller.isAnimating) {
-                    _controller.stop();
-                    btnText = 'Resume';
-
-                  } else {
-                    _controller.forward();
-                    btnText = 'Pause';
-                  }
-                },
-                child: Text(btnText),
+                onPressed: _pauseOrResume,
+                child: Text(isPaused ? 'Resume' : 'Pause'),
               ),
-              SizedBox(width: 8),
+              const SizedBox(width: 8),
               ElevatedButton(
                 onPressed: _resetAnimation,
                 child: const Text('Reset'),
