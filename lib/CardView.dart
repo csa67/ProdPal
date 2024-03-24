@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:hci/NewTaskPage.dart';
+import 'package:hci/NewTaskPage.dart' as CreateTask;
+import 'package:hci/model/Task';
+import 'package:hci/util.dart';
 
 class CardView extends StatelessWidget{
   const CardView({super.key});
@@ -10,8 +12,8 @@ class CardView extends StatelessWidget{
       home:Scaffold(
         appBar: AppBar(title: const Text('Task List Page'),),
         body: const TasksList(),
-          ),
-        );
+      ),
+    );
   }
 }
 
@@ -24,12 +26,44 @@ class TasksList extends StatefulWidget {
 
 class _TasksListState extends State<TasksList>{
 
-  final List<String> items = List<String>.generate(20, (index) => "Item $index");
-
-
+  // Creating a list of tasks
+  final List<Task> items =  [
+    Task(
+      title: "Grocery Shopping",
+      description: "Buy milk, eggs, and bread.",
+      date: DateTime(2024, 3, 24),
+      startTime: const TimeOfDay(hour: 10, minute: 0),
+      endTime: const TimeOfDay(hour: 11, minute: 0),
+      tag: "Personal",
+    ),
+    Task(
+      title: "Morning Jog",
+      description: "30 minutes around the park.",
+      date: DateTime(2024, 3, 25),
+      startTime: const TimeOfDay(hour: 6, minute: 0),
+      endTime: const TimeOfDay(hour: 6, minute: 30),
+      tag: "Health",
+      priority: TaskPriority.medium,
+    ),
+    Task(
+      title: "Flutter Project",
+      description: "Work on the new app feature.",
+      date: DateTime(2024, 3, 25),
+      startTime: const TimeOfDay(hour: 9, minute: 0),
+      endTime: const TimeOfDay(hour: 12, minute: 0),
+      tag: "Work",
+      priority: TaskPriority.high,
+    ),
+    // Add more tasks as needed
+  ];
 
   @override
   Widget build(BuildContext context){
+    // Assuming 'tasks' is your List<Task>
+    items.sort((Task a, Task b) {
+      return timeOfDayToMinutes(a.startTime).compareTo(timeOfDayToMinutes(b.startTime));
+    });
+
     return ListView.builder(
         itemCount: items.length,
         itemBuilder: (context, index){
@@ -40,24 +74,33 @@ class _TasksListState extends State<TasksList>{
                   items.removeAt(index);
                 });
               },
-                onTaskDismissal: (){
-                  setState(() {
-                    items.removeAt(index);
-                  });
+              onTaskDismissal: (){
+                setState(() {
+                  items.removeAt(index);
                 });
+              }, startTime: items[index].startTime,);
         });
   }
+
 }
 class TaskCard extends StatelessWidget{
-  final String item;
+  final Task item;
+  final TimeOfDay startTime;
   final VoidCallback onTaskCompletion;
   final VoidCallback onTaskDismissal;
-  const TaskCard({super.key, required this.item, required this.onTaskCompletion, required this.onTaskDismissal});
+  const TaskCard(
+      {
+        super.key,
+        required this.item,
+        required this.startTime,
+        required this.onTaskCompletion,
+        required this.onTaskDismissal
+      });
 
   @override
   Widget build(BuildContext context){
     return Dismissible(
-      key: Key(item),
+      key: Key(item.title),
       direction: DismissDirection.horizontal,
       secondaryBackground: Container(
         color: Colors.green,
@@ -74,6 +117,7 @@ class TaskCard extends StatelessWidget{
       onDismissed: (direction){
         if(direction == DismissDirection.startToEnd) {
           //right swipe
+          item.isCompleted = true;
           onTaskCompletion();
         }else if(direction == DismissDirection.endToStart) {
           //left swipe
@@ -81,22 +125,23 @@ class TaskCard extends StatelessWidget{
         }
       },
       child: Container(
-      margin: const EdgeInsets.all(8.0),
-      width: double.infinity,
-      height: 60.0,
-      child: Card(
-        clipBehavior: Clip.antiAlias,
-        child: InkWell(
-          splashColor: Colors.deepOrange.withAlpha(30),
-          onTap: (){
-            Navigator.push(context, MaterialPageRoute(builder: (context) => const NewTaskPage()),);
-          },
-          child: const Padding(
-              padding: EdgeInsets.all(16.0),
-              child: Text('task Details')),
+        margin: const EdgeInsets.all(8.0),
+        width: double.infinity,
+        height: 60.0,
+        child: Card(
+          clipBehavior: Clip.antiAlias,
+          child: InkWell(
+            splashColor: Colors.deepOrange.withAlpha(30),
+            onTap: (){
+              Navigator.push(context, MaterialPageRoute(builder: (context) => const CreateTask.NewTaskPage()),);
+            },
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Text(item.title),
+            ),
+          ),
         ),
       ),
-    ),
     );
   }
 }

@@ -1,0 +1,48 @@
+import 'package:flutter/material.dart';
+
+enum TaskPriority { low, medium, high }
+
+class Task {
+  String title;
+  String description;
+  DateTime date;
+  TimeOfDay startTime;
+  TimeOfDay endTime;
+  String tag;
+  TaskPriority priority;
+  bool isCompleted;
+
+  Task({
+    required this.title,
+    required this.description,
+    required this.date,
+    required this.startTime,
+    required this.endTime,
+    required this.tag,
+    this.priority = TaskPriority.low, // Default priority is set to low
+    this.isCompleted = false,
+  });
+
+  // Helper method to format TimeOfDay for printing
+  String _formatTimeOfDay(TimeOfDay time) {
+    final hour = time.hour.toString().padLeft(2, '0');
+    final minute = time.minute.toString().padLeft(2, '0');
+    return "$hour:$minute";
+  }
+
+  // Method to print task details
+  void printDetails() {
+    print("Title: $title");
+    print("Description: $description");
+    print("Date: ${date.year}-${date.month}-${date.day}");
+    print("Start Time: ${_formatTimeOfDay(startTime)}");
+    print("End Time: ${_formatTimeOfDay(endTime)}");
+    print("Tag: $tag");
+    print("Priority: ${priority.name}");
+    print("Status: ${isCompleted ? 'Completed' : 'Not Completed'}");
+  }
+}
+
+
+
+
