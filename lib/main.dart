@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hci/CardView.dart';
 import 'package:hci/NewTaskPage.dart';
+import 'package:hci/StatsPage.dart';
 
 void main() {
   runApp(const MyApp());
@@ -39,7 +40,7 @@ class _MyHomePageState extends State<MyHomePage> {
   final List<Widget> _navOptions = <Widget>[
     const CardView(),
     const NewTaskPage(),
-    const Text('Index 2: Profile', style: optionStyle,),
+    const StatsPage(),
   ];
 
   void _onOptionSelected(int index) {
