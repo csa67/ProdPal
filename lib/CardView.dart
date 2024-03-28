@@ -24,11 +24,12 @@ class TasksList extends StatefulWidget {
   State<TasksList> createState() => _TasksListState();
 }
 
-class _TasksListState extends State<TasksList>{
+class _TasksListState extends State<TasksList> {
 
   // Creating a list of tasks
-  final List<Task> items =  [
+  final List<Task> items = [
     Task(
+      id: UniqueKey().toString(),
       title: "Grocery Shopping",
       description: "Buy milk, eggs, and bread.",
       date: DateTime(2024, 3, 24),
@@ -37,6 +38,7 @@ class _TasksListState extends State<TasksList>{
       tag: "Personal",
     ),
     Task(
+      id: UniqueKey().toString(),
       title: "Morning Jog",
       description: "30 minutes around the park.",
       date: DateTime(2024, 3, 25),
@@ -46,6 +48,7 @@ class _TasksListState extends State<TasksList>{
       priority: TaskPriority.medium,
     ),
     Task(
+      id: UniqueKey().toString(),
       title: "Flutter Project",
       description: "Work on the new app feature.",
       date: DateTime(2024, 3, 25),
@@ -58,10 +61,11 @@ class _TasksListState extends State<TasksList>{
   ];
 
   @override
-  Widget build(BuildContext context){
+  Widget build(BuildContext context) {
     // Assuming 'tasks' is your List<Task>
     items.sort((Task a, Task b) {
-      return timeOfDayToMinutes(a.startTime).compareTo(timeOfDayToMinutes(b.startTime));
+      return timeOfDayToMinutes(a.startTime).compareTo(
+          timeOfDayToMinutes(b.startTime));
     });
 
     return ListView.builder(
@@ -83,22 +87,23 @@ class _TasksListState extends State<TasksList>{
   }
 
 }
-class TaskCard extends StatelessWidget{
+
+class TaskCard extends StatelessWidget {
   final Task item;
   final TimeOfDay startTime;
   final VoidCallback onTaskCompletion;
   final VoidCallback onTaskDismissal;
-  const TaskCard(
-      {
-        super.key,
-        required this.item,
-        required this.startTime,
-        required this.onTaskCompletion,
-        required this.onTaskDismissal
-      });
+
+  const TaskCard({
+    super.key,
+    required this.item,
+    required this.startTime,
+    required this.onTaskCompletion,
+    required this.onTaskDismissal,
+  });
 
   @override
-  Widget build(BuildContext context){
+  Widget build(BuildContext context) {
     return Dismissible(
       key: Key(item.title),
       direction: DismissDirection.horizontal,
@@ -114,26 +119,29 @@ class TaskCard extends StatelessWidget{
         padding: const EdgeInsets.only(left: 20.0),
         child: const Icon(Icons.archive_outlined),
       ),
-      onDismissed: (direction){
-        if(direction == DismissDirection.startToEnd) {
-          //right swipe
+      onDismissed: (direction) {
+        if (direction == DismissDirection.startToEnd) {
           item.isCompleted = true;
           onTaskCompletion();
-        }else if(direction == DismissDirection.endToStart) {
-          //left swipe
+        } else if (direction == DismissDirection.endToStart) {
           onTaskDismissal();
         }
       },
       child: Container(
-        margin: const EdgeInsets.all(8.0),
+        margin: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
         width: double.infinity,
-        height: 60.0,
         child: Card(
-          clipBehavior: Clip.antiAlias,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10.0),
+          ),
+          elevation: 4.0,
           child: InkWell(
-            splashColor: Colors.deepOrange.withAlpha(30),
-            onTap: (){
-              Navigator.push(context, MaterialPageRoute(builder: (context) => const CreateTask.NewTaskPage()),);
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => const CreateTask.NewTaskPage()),
+              );
             },
             child: Padding(
               padding: const EdgeInsets.all(16.0),
@@ -145,3 +153,5 @@ class TaskCard extends StatelessWidget{
     );
   }
 }
+
+//This code is not complete but gives an idea of the direction to take. You'll need to expand on this, add the necessary properties, and probably refactor to accommodate more complex layout requirements. To achieve an exact match with the screenshot, you would need to incrementally adjust paddings, margins, colors, and other styling properties.
