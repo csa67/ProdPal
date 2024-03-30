@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:hci/DurationPicker.dart';
 import 'package:hci/timerPage.dart';
+import 'package:hci/DurationPriority.dart';
 
 class NewTaskPage extends StatelessWidget{
   const NewTaskPage({super.key});
@@ -76,29 +76,32 @@ class _TaskState extends State<Task>{
   @override
   Widget build(BuildContext context){
     return ListView(
-      padding: const EdgeInsets.all(8),
+      padding: const EdgeInsets.all(10),
       children: <Widget>[
         const TextField(
           decoration: InputDecoration(
             labelText: 'Title',
             contentPadding: EdgeInsets.all(8),
             border: OutlineInputBorder(),
+            alignLabelWithHint: true,
           ),
             style: TextStyle(fontSize: 24),
             minLines: 2,
             maxLines: 3,
         ),
+        SizedBox(height: 15),
         const TextField(
           decoration: InputDecoration(
-            hintText: 'Description',
-            hintStyle: TextStyle(fontSize:16,fontWeight:FontWeight.bold),
+            labelText: 'Description',
             contentPadding: EdgeInsets.all(8),
             border: OutlineInputBorder(),
+            alignLabelWithHint: true,
             ),
             style: TextStyle(fontSize: 16),
             minLines: 4,
-            maxLines: 6,
+          maxLines: 10,
           ),
+        SizedBox(height: 20),
         ListTile(
           title: Text(selectedDate == null ? 'Date' : 'Date:  ${'${selectedDate!.toLocal()}'.split(' ')[0]}'),
           leading: const Icon(Icons.calendar_today),
@@ -112,6 +115,8 @@ class _TaskState extends State<Task>{
           },
         ),
         if (isDateTileExpanded) _buildDatePicker(),
+        SizedBox(height: 10),
+        TimeSelectionTile(),
         ExpansionTile(
           title: const Text('Repeat'),
           leading: const Icon(Icons.repeat),
@@ -192,27 +197,14 @@ class _TaskState extends State<Task>{
             ),
           ]
         ),
+        ExpansionTile(
+          title: const Text('Priority'),
+          leading: const Icon(Icons.priority_high),
+          children: [
+            PrioritySelectionTile()
+          ],
+        ),
       ],
-    );
-  }
-
-  void _showDurationPicker() async {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text("Pick a duration"),
-          content: SizedBox(
-            height: 400, // Adjust as needed
-            child: DurationPicker(
-              onDurationSelected: (int hour, int minute) {
-                // Update the state of your parent widget here
-                Navigator.pop(context); // Close the dialog
-              },
-            ),
-          ),
-        );
-      },
     );
   }
 }
