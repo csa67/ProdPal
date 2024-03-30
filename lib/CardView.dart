@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:hci/model/Task';
+import 'package:hci/model/Task.dart';
 import 'package:hci/util.dart';
 import 'package:hci/TaskDetails.dart';
 
@@ -153,5 +153,3 @@ class TaskCard extends StatelessWidget {
     );
   }
 }
-
-//This code is not complete but gives an idea of the direction to take. You'll need to expand on this, add the necessary properties, and probably refactor to accommodate more complex layout requirements. To achieve an exact match with the screenshot, you would need to incrementally adjust paddings, margins, colors, and other styling properties.

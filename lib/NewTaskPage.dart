@@ -44,6 +44,8 @@ class _TaskState extends State<Task>{
   DateTime? currentDate;
   bool isDateTileExpanded = false;
   int _selectedValue = 1;
+  final TextEditingController _titleController = TextEditingController();
+  final TextEditingController _descriptionController = TextEditingController();
 
   void _onApplyButtonPressed() {
     setState(() {
@@ -78,30 +80,32 @@ class _TaskState extends State<Task>{
     return ListView(
       padding: const EdgeInsets.all(10),
       children: <Widget>[
-        const TextField(
-          decoration: InputDecoration(
+        TextField(
+          controller: _titleController,
+          decoration: const InputDecoration(
             labelText: 'Title',
             contentPadding: EdgeInsets.all(8),
             border: OutlineInputBorder(),
             alignLabelWithHint: true,
           ),
-            style: TextStyle(fontSize: 24),
+            style: const TextStyle(fontSize: 24),
             minLines: 2,
             maxLines: 3,
         ),
-        SizedBox(height: 15),
-        const TextField(
-          decoration: InputDecoration(
+        const SizedBox(height: 15),
+        TextField(
+          controller: _descriptionController,
+          decoration: const InputDecoration(
             labelText: 'Description',
             contentPadding: EdgeInsets.all(8),
             border: OutlineInputBorder(),
             alignLabelWithHint: true,
             ),
-            style: TextStyle(fontSize: 16),
+            style: const TextStyle(fontSize: 16),
             minLines: 4,
           maxLines: 10,
           ),
-        SizedBox(height: 20),
+        const SizedBox(height: 20),
         ListTile(
           title: Text(selectedDate == null ? 'Date' : 'Date:  ${'${selectedDate!.toLocal()}'.split(' ')[0]}'),
           leading: const Icon(Icons.calendar_today),
@@ -115,7 +119,7 @@ class _TaskState extends State<Task>{
           },
         ),
         if (isDateTileExpanded) _buildDatePicker(),
-        SizedBox(height: 10),
+        const SizedBox(height: 10),
         TimeSelectionTile(),
         ExpansionTile(
           title: const Text('Repeat'),
@@ -197,9 +201,9 @@ class _TaskState extends State<Task>{
             ),
           ]
         ),
-        ExpansionTile(
-          title: const Text('Priority'),
-          leading: const Icon(Icons.priority_high),
+        const ExpansionTile(
+          title: Text('Priority'),
+          leading: Icon(Icons.priority_high),
           children: [
             PrioritySelectionTile()
           ],
