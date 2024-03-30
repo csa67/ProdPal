@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:hci/NewTaskPage.dart' as CreateTask;
 import 'package:hci/model/Task';
 import 'package:hci/util.dart';
+import 'package:hci/TaskDetails.dart';
 
 class CardView extends StatelessWidget{
   const CardView({super.key});
@@ -140,7 +140,7 @@ class TaskCard extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => const CreateTask.NewTaskPage()),
+                    builder: (context) => TaskDetails()),
               );
             },
             child: Padding(
