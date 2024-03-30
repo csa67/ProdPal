@@ -39,7 +39,7 @@ class NewTaskPage extends StatelessWidget{
 }
 
 class Task extends StatefulWidget{
-  const Task({Key? key}) : super(key: key);
+  const Task({super.key});
 
   @override
   State<Task> createState() => _TaskState();
@@ -51,6 +51,9 @@ class _TaskState extends State<Task>{
   DateTime? currentDate;
   bool isDateTileExpanded = false;
   int _selectedValue = 1;
+  late TimeOfDay _startTime;
+  late TimeOfDay _endTime;
+  taskmodel.TaskPriority _selectedPriority = taskmodel.TaskPriority.low;
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
 
@@ -68,10 +71,10 @@ class _TaskState extends State<Task>{
       title: _titleController.text,
       description: _descriptionController.text,
       date: selectedDate ?? DateTime.now(),
-      startTime: TimeOfDay(hour: 9, minute: 0),
-      endTime: TimeOfDay(hour: 9, minute: 30),
+      startTime: _startTime,
+      endTime: _endTime,
       tag: 'ExampleTag', // This should ideally come from user input
-      priority: taskmodel.TaskPriority.low, // Adjust based on actual user input
+      priority: _selectedPriority,
       isCompleted: false,
     );
   }
@@ -143,7 +146,14 @@ Widget _buildDatePicker() {
         ),
         if (isDateTileExpanded) _buildDatePicker(),
         const SizedBox(height: 10),
-        TimeSelectionTile(),
+        TimeSelectionTile(
+          onSettingDuration: (startTime, endTime){
+            setState(() {
+              _startTime = startTime;
+              _endTime = endTime;
+            });
+          }
+        ),
         ExpansionTile(
             title: const Text('Repeat'),
             leading: const Icon(Icons.repeat),
@@ -224,11 +234,17 @@ Widget _buildDatePicker() {
               ),
             ]
         ),
-        const ExpansionTile(
-          title: Text('Priority'),
-          leading: Icon(Icons.priority_high),
+        ExpansionTile(
+          title: const Text('Priority'),
+          leading: const Icon(Icons.priority_high),
           children: [
-            PrioritySelectionTile()
+            PrioritySelectionTile(
+              onPriorityChanged: (priority){
+                setState(() {
+                  _selectedPriority = priority;
+                });
+              }
+            )
           ],
         ),
       ],

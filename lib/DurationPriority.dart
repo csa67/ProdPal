@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:hci/model/Task.dart';
 
 class TimeSelectionTile extends StatefulWidget {
+  final Function(TimeOfDay startTime, TimeOfDay endTime) onSettingDuration;
+  const TimeSelectionTile({super.key,required this.onSettingDuration});
+
   @override
   _TimeSelectionTileState createState() => _TimeSelectionTileState();
 }
@@ -14,10 +18,11 @@ class _TimeSelectionTileState extends State<TimeSelectionTile> {
       context: context,
       initialTime: _fromTime ?? TimeOfDay.now(),
     );
-    if (picked != null && picked != _fromTime)
+    if (picked != null && picked != _fromTime) {
       setState(() {
         _fromTime = picked;
       });
+    }
   }
 
   Future<void> _selectTillTime(BuildContext context) async {
@@ -25,10 +30,11 @@ class _TimeSelectionTileState extends State<TimeSelectionTile> {
       context: context,
       initialTime: _tillTime ?? TimeOfDay.now(),
     );
-    if (picked != null && picked != _tillTime)
+    if (picked != null && picked != _tillTime) {
       setState(() {
         _tillTime = picked;
       });
+    }
   }
 
   @override
@@ -36,7 +42,7 @@ class _TimeSelectionTileState extends State<TimeSelectionTile> {
     return Column(
         children: [
           ExpansionTile(
-            title: Text('Time'),
+            title: const Text('Time'),
             leading: const Icon(Icons.alarm),
             children: [
               ListTile(
@@ -44,7 +50,7 @@ class _TimeSelectionTileState extends State<TimeSelectionTile> {
                     ? 'From: ${_fromTime!.format(context)}'
                     : 'Choose From Time'),
                 trailing: IconButton(
-                  icon: Icon(Icons.edit),
+                  icon: const Icon(Icons.edit),
                   onPressed: () => _selectFromTime(context),
                 ),
               ),
@@ -54,7 +60,7 @@ class _TimeSelectionTileState extends State<TimeSelectionTile> {
                       ? 'Till: ${_tillTime!.format(context)}'
                       : 'Choose Till Time'),
                   trailing: IconButton(
-                    icon: Icon(Icons.edit),
+                    icon: const Icon(Icons.edit),
                     onPressed: () => _selectTillTime(context),
                   ),
                 ),
@@ -66,14 +72,15 @@ class _TimeSelectionTileState extends State<TimeSelectionTile> {
 }
 
 class PrioritySelectionTile extends StatefulWidget {
-  const PrioritySelectionTile({super.key});
+  final Function(TaskPriority priority) onPriorityChanged;
+  const PrioritySelectionTile({super.key,required this.onPriorityChanged});
 
   @override
   _PrioritySelectionTileState createState() => _PrioritySelectionTileState();
 }
 
 class _PrioritySelectionTileState extends State<PrioritySelectionTile> {
-  List<bool> _selections = [true, false, false];
+  final List<bool> _selections = [true, false, false];
   bool vertical = false;
   static const List<Widget> priorityLevels = <Widget>[
     Text('Low'),
