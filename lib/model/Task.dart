@@ -45,6 +45,28 @@ class Task {
       'isCompleted': isCompleted ? 1 : 0, // Convert bool to int for storage
     };
   }
+
+  // Convert a Map to a Task object
+  factory Task.fromMap(Map<String, dynamic> map) {
+    return Task(
+      id: map['id'],
+      title: map['title'],
+      description: map['description'],
+      date: DateTime.parse(map['date']),
+      startTime: _parseTime(map['startTime']),
+      endTime: _parseTime(map['endTime']),
+      tag: map['tag'],
+      priority: TaskPriority.values[map['priority']],
+      isCompleted: map['isCompleted'] == 1,
+    );
+  }
+
+  // Helper method to convert a time string to a TimeOfDay object
+  static TimeOfDay _parseTime(String time) {
+    final hours = int.parse(time.split(":")[0]);
+    final minutes = int.parse(time.split(":")[1]);
+    return TimeOfDay(hour: hours, minute: minutes);
+  }
 }
 
 

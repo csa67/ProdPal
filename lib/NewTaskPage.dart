@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:hci/timerPage.dart';
+import 'package:hci/database/db.dart';
 import 'package:hci/DurationPriority.dart';
+import 'package:hci/model/Task.dart' as taskmodel;
+
+GlobalKey<_TaskState> _taskKey = GlobalKey();
 
 class NewTaskPage extends StatelessWidget{
   const NewTaskPage({super.key});
@@ -8,14 +11,18 @@ class NewTaskPage extends StatelessWidget{
   @override
   Widget build(BuildContext context){
     return Scaffold(
-        body: const Task(),
+        body: Task(key: _taskKey),
         persistentFooterButtons: [
           SizedBox(
             width: MediaQuery.of(context).size.width,
             child: ElevatedButton(
-              onPressed: () {
-                // Define the action when the button is pressed
-                Navigator.push(context, MaterialPageRoute(builder: (context) => const TimerPage()),);
+              onPressed: () async {
+                if(_taskKey.currentState!=null){
+                  final newTask = _taskKey.currentState!.createTaskFromInput();
+                  await DatabaseHelper.instance.insertTask(newTask);
+                  Navigator.pop(context);
+                }
+
               },
               style: ElevatedButton.styleFrom(
                 shape: RoundedRectangleBorder(
@@ -32,7 +39,7 @@ class NewTaskPage extends StatelessWidget{
 }
 
 class Task extends StatefulWidget{
-  const Task({super.key});
+  const Task({Key? key}) : super(key: key);
 
   @override
   State<Task> createState() => _TaskState();
@@ -54,7 +61,22 @@ class _TaskState extends State<Task>{
     });
   }
 
-  Widget _buildDatePicker() {
+  taskmodel.Task createTaskFromInput() {
+    // Ensure all inputs are validated before creating the Task object
+    return taskmodel.Task(
+      id: DateTime.now().millisecondsSinceEpoch.toString(),
+      title: _titleController.text,
+      description: _descriptionController.text,
+      date: selectedDate ?? DateTime.now(),
+      startTime: TimeOfDay(hour: 9, minute: 0),
+      endTime: TimeOfDay(hour: 9, minute: 30),
+      tag: 'ExampleTag', // This should ideally come from user input
+      priority: taskmodel.TaskPriority.low, // Adjust based on actual user input
+      isCompleted: false,
+    );
+  }
+
+Widget _buildDatePicker() {
     return Column(
       children: [
        CalendarDatePicker(
@@ -76,7 +98,7 @@ class _TaskState extends State<Task>{
   }
 
   @override
-  Widget build(BuildContext context){
+  Widget build(BuildContext context) {
     return ListView(
       padding: const EdgeInsets.all(10),
       children: <Widget>[
@@ -88,9 +110,9 @@ class _TaskState extends State<Task>{
             border: OutlineInputBorder(),
             alignLabelWithHint: true,
           ),
-            style: const TextStyle(fontSize: 24),
-            minLines: 2,
-            maxLines: 3,
+          style: const TextStyle(fontSize: 24),
+          minLines: 2,
+          maxLines: 3,
         ),
         const SizedBox(height: 15),
         TextField(
@@ -100,14 +122,15 @@ class _TaskState extends State<Task>{
             contentPadding: EdgeInsets.all(8),
             border: OutlineInputBorder(),
             alignLabelWithHint: true,
-            ),
-            style: const TextStyle(fontSize: 16),
-            minLines: 4,
-          maxLines: 10,
           ),
+          style: const TextStyle(fontSize: 16),
+          minLines: 4,
+          maxLines: 10,
+        ),
         const SizedBox(height: 20),
         ListTile(
-          title: Text(selectedDate == null ? 'Date' : 'Date:  ${'${selectedDate!.toLocal()}'.split(' ')[0]}'),
+          title: Text(selectedDate == null ? 'Date' : 'Date:  ${'${selectedDate!
+              .toLocal()}'.split(' ')[0]}'),
           leading: const Icon(Icons.calendar_today),
           trailing: Icon(
             isDateTileExpanded ? Icons.expand_less : Icons.expand_more,
@@ -122,84 +145,84 @@ class _TaskState extends State<Task>{
         const SizedBox(height: 10),
         TimeSelectionTile(),
         ExpansionTile(
-          title: const Text('Repeat'),
-          leading: const Icon(Icons.repeat),
-          children: <Widget>[
+            title: const Text('Repeat'),
+            leading: const Icon(Icons.repeat),
+            children: <Widget>[
               RadioListTile(
                   title: const Text('Never'),
                   value: 1,
                   groupValue: _selectedValue,
-                  onChanged: (value){
+                  onChanged: (value) {
                     setState(() {
                       _selectedValue = value!;
                     });
                   }
               ),
-            RadioListTile(
-                title: const Text('Daily'),
-                value: 2,
-                groupValue: _selectedValue,
-                onChanged: (value){
-                  setState(() {
-                    _selectedValue = value!;
-                  });
-                }
-            ),
-            RadioListTile(
-                title: const Text('Weekdays'),
-                value: 3,
-                groupValue: _selectedValue,
-                onChanged: (value){
-                  setState(() {
-                    _selectedValue = value!;
-                  });
-                }
-            ),
-            RadioListTile(
-                title: const Text('Weekend'),
-                value: 4,
-                groupValue: _selectedValue,
-                onChanged: (value){
-                  setState(() {
-                    _selectedValue = value!;
-                  });
-                }
-            ),
-            RadioListTile(
-                title: const Text('Weekly'),
-                value: 5,
-                groupValue: _selectedValue,
-                onChanged: (value){
-                  setState(() {
-                    _selectedValue = value!;
-                  });
-                }
-            ),
-            RadioListTile(
-                title: const Text('Monthly'),
-                value: 6,
-                groupValue: _selectedValue,
-                onChanged: (value){
-                  setState(() {
-                    _selectedValue = value!;
-                  });
-                }
-            ),
-            RadioListTile(
-                title: const Text('Custom'),
-                value: 7,
-                groupValue: _selectedValue,
-                onChanged: (value){
-                  setState(() {
-                    _selectedValue = value!;
-                  });
-                }
-            ),
-            ElevatedButton(
-              onPressed: _onApplyButtonPressed,
-              child: const Text('Confirm'),
-            ),
-          ]
+              RadioListTile(
+                  title: const Text('Daily'),
+                  value: 2,
+                  groupValue: _selectedValue,
+                  onChanged: (value) {
+                    setState(() {
+                      _selectedValue = value!;
+                    });
+                  }
+              ),
+              RadioListTile(
+                  title: const Text('Weekdays'),
+                  value: 3,
+                  groupValue: _selectedValue,
+                  onChanged: (value) {
+                    setState(() {
+                      _selectedValue = value!;
+                    });
+                  }
+              ),
+              RadioListTile(
+                  title: const Text('Weekend'),
+                  value: 4,
+                  groupValue: _selectedValue,
+                  onChanged: (value) {
+                    setState(() {
+                      _selectedValue = value!;
+                    });
+                  }
+              ),
+              RadioListTile(
+                  title: const Text('Weekly'),
+                  value: 5,
+                  groupValue: _selectedValue,
+                  onChanged: (value) {
+                    setState(() {
+                      _selectedValue = value!;
+                    });
+                  }
+              ),
+              RadioListTile(
+                  title: const Text('Monthly'),
+                  value: 6,
+                  groupValue: _selectedValue,
+                  onChanged: (value) {
+                    setState(() {
+                      _selectedValue = value!;
+                    });
+                  }
+              ),
+              RadioListTile(
+                  title: const Text('Custom'),
+                  value: 7,
+                  groupValue: _selectedValue,
+                  onChanged: (value) {
+                    setState(() {
+                      _selectedValue = value!;
+                    });
+                  }
+              ),
+              ElevatedButton(
+                onPressed: _onApplyButtonPressed,
+                child: const Text('Confirm'),
+              ),
+            ]
         ),
         const ExpansionTile(
           title: Text('Priority'),

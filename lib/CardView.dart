@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hci/database/db.dart';
 import 'package:hci/model/Task.dart';
 import 'package:hci/util.dart';
 import 'package:hci/TaskDetails.dart';
@@ -26,65 +27,56 @@ class TasksList extends StatefulWidget {
 
 class _TasksListState extends State<TasksList> {
 
-  // Creating a list of tasks
-  final List<Task> items = [
-    Task(
-      id: UniqueKey().toString(),
-      title: "Grocery Shopping",
-      description: "Buy milk, eggs, and bread.",
-      date: DateTime(2024, 3, 24),
-      startTime: const TimeOfDay(hour: 10, minute: 0),
-      endTime: const TimeOfDay(hour: 11, minute: 0),
-      tag: "Personal",
-    ),
-    Task(
-      id: UniqueKey().toString(),
-      title: "Morning Jog",
-      description: "30 minutes around the park.",
-      date: DateTime(2024, 3, 25),
-      startTime: const TimeOfDay(hour: 6, minute: 0),
-      endTime: const TimeOfDay(hour: 6, minute: 30),
-      tag: "Health",
-      priority: TaskPriority.medium,
-    ),
-    Task(
-      id: UniqueKey().toString(),
-      title: "Flutter Project",
-      description: "Work on the new app feature.",
-      date: DateTime(2024, 3, 25),
-      startTime: const TimeOfDay(hour: 9, minute: 0),
-      endTime: const TimeOfDay(hour: 12, minute: 0),
-      tag: "Work",
-      priority: TaskPriority.high,
-    ),
-    // Add more tasks as needed
-  ];
+  late Future<List<Task>> futureTasks;
+
+  @override
+  void initState(){
+    super.initState();
+    futureTasks = DatabaseHelper.instance.getTasks();
+  }
 
   @override
   Widget build(BuildContext context) {
-    // Assuming 'tasks' is your List<Task>
-    items.sort((Task a, Task b) {
-      return timeOfDayToMinutes(a.startTime).compareTo(
-          timeOfDayToMinutes(b.startTime));
-    });
 
-    return ListView.builder(
-        itemCount: items.length,
-        itemBuilder: (context, index){
-          return TaskCard(
+    return FutureBuilder<List<Task>>(
+        future: futureTasks,
+        builder: (context, snapshot)
+    {
+      if (snapshot.connectionState == ConnectionState.waiting) {
+        return const Center(child: CircularProgressIndicator());
+      } else if (snapshot.hasError) {
+        return Center(child: Text('Error: ${snapshot.error}'));
+      } else if (snapshot.data != null) {
+        final items = snapshot.data!;
+
+        // Assuming 'tasks' is your List<Task>
+        items.sort((Task a, Task b) {
+          return timeOfDayToMinutes(a.startTime).compareTo(
+              timeOfDayToMinutes(b.startTime));
+        });
+
+        return ListView.builder(
+          itemCount: items.length,
+          itemBuilder: (context, index) {
+            return TaskCard(
               item: items[index],
               onTaskCompletion: () {
                 setState(() {
                   items.removeAt(index);
                 });
               },
-              onTaskDismissal: (){
+              onTaskDismissal: () {
                 setState(() {
                   items.removeAt(index);
                 });
               }, startTime: items[index].startTime,);
-        });
-  }
+          },);
+      } else {
+        return const Center(child: Text("No tasks found"));
+      }
+    },
+    );
+    }
 
 }
 

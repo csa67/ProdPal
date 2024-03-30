@@ -49,12 +49,21 @@ class DatabaseHelper {
   }
 
   Future<void> insertTask(Task task) async {
-  final db = await database;
-  await db.insert(
-  'taskslist',
-  task.toMap(),
-  conflictAlgorithm: ConflictAlgorithm.replace,
-  );
+    final db = await database;
+    await db.insert(
+      'taskslist',
+      task.toMap(),
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+  }
+
+  Future<List<Task>> getTasks() async {
+    final db = await database;
+    final List<Map<String, dynamic>> taskMaps = await db.query('taskslist');
+
+    return List.generate(taskMaps.length, (i) {
+      return Task.fromMap(taskMaps[i]);
+    });
   }
 
 }
