@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hci/CardView.dart';
 import 'package:hci/NewTaskPage.dart';
+import 'package:hci/Onboarding/OnboardingScreen.dart';
 import 'package:hci/StatsPage.dart';
 
 void main() {
@@ -14,19 +15,15 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.pinkAccent),
-        useMaterial3: true,
-      ),
-      home: const MyHomePage(title: "Today's Tasks"),
+      debugShowCheckedModeBanner: false,
+      home: OnBoardingScreen(),
+      //const MyHomePage(title: "Today's Tasks"),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-  final String title;
+  const MyHomePage({super.key});
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
@@ -54,7 +51,6 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(widget.title),
       ),
       body: IndexedStack(
         index: _selectedIndex,

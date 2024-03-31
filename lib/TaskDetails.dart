@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hci/timerPage.dart';
 import 'package:hci/model/Task.dart';
@@ -11,7 +10,7 @@ class TaskDetails extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Task Details')),
+      appBar: AppBar(title: const Text('Task Details')),
       body: WorkoutScreen(task: task,),
     );
   }
@@ -42,7 +41,7 @@ class WorkoutScreen extends StatelessWidget {
               subtitle: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  SizedBox(height : 15.0),
+                  const SizedBox(height : 15.0),
                   Text(task.description)
               ]),
             ),
