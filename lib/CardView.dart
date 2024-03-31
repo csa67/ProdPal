@@ -132,7 +132,7 @@ class TaskCard extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => TaskDetails()),
+                    builder: (context) => TaskDetails(task: item,)),
               );
             },
             child: Padding(

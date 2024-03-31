@@ -1,60 +1,63 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hci/timerPage.dart';
+import 'package:hci/model/Task.dart';
+import 'package:hci/util.dart';
 
 class TaskDetails extends StatelessWidget {
-  const TaskDetails({super.key});
+  final Task task;
+  const TaskDetails({super.key, required this.task});
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Workout App',
-      home: WorkoutScreen(),
+    return Scaffold(
+      appBar: AppBar(title: Text('Task Details')),
+      body: WorkoutScreen(task: task,),
     );
   }
 }
 
 class WorkoutScreen extends StatelessWidget {
+  final Task task;
+  const WorkoutScreen({super.key, required this.task});
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Workout'),
-        actions: <Widget>[
-          IconButton(
-            icon: Icon(Icons.delete),
-            onPressed: () {
-              // Implement delete action
-            },
-          ),
-        ],
-      ),
-      body: ListView(
+    return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal:8.0),
+            child: Text(
+              capitalize(task.title),
+              style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                fontWeight: FontWeight.bold,
+              ),
+            textAlign: TextAlign.right,
+            ),
+          ),
           Card(
             child: ListTile(
-              title: Text('Details:'),
+              title: const Text('Details:'),
               subtitle: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  Text('1. 10 Pushups'),
-                  Text('2. 5 min planks'),
-                  Text('3. 20 min run'),
-                ],
-              ),
+                  SizedBox(height : 15.0),
+                  Text(task.description)
+              ]),
             ),
           ),
           Padding(
-            padding: EdgeInsets.all(8.0),
+            padding: const EdgeInsets.all(8.0),
             child: ElevatedButton(
               onPressed: () {
                 Navigator.push(context, MaterialPageRoute(builder: (context) => const TimerPage())
                 );
               },
-              child: Text('Focus Mode'),
+              child: const Text('Focus Mode'),
             ),
           ),
         ],
-      ),
-    );
+      );
   }
 }

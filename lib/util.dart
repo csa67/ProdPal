@@ -10,3 +10,5 @@ String _formatTimeOfDay(TimeOfDay? time) {
 int timeOfDayToMinutes(TimeOfDay time) {
   return time.hour * 60 + time.minute;
 }
+
+String capitalize(String s) => s[0].toUpperCase() + s.substring(1);
