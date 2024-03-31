@@ -4,6 +4,7 @@ import 'package:hci/Onboarding/intro_page_2.dart';
 import 'package:hci/Onboarding/intro_page_3.dart';
 import 'package:hci/Onboarding/intro_page_4.dart';
 import 'package:hci/main.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class OnBoardingScreen extends StatefulWidget{
@@ -56,7 +57,9 @@ class _OnBoardingScreenState extends State<OnBoardingScreen>{
                     //next or done
                     onLastPage ?
                     GestureDetector(
-                      onTap: (){
+                      onTap: () async {
+                        final prefs = await SharedPreferences.getInstance();
+                        await prefs.setBool('onboardingComplete',true);
                         Navigator.push(context,
                             MaterialPageRoute(
                             builder: (context) {
@@ -75,9 +78,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen>{
                       },
                       child: const Text('Next'),
                     )
-
                   ]
-
               )
           )
         ],

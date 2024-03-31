@@ -3,6 +3,7 @@ import 'package:hci/CardView.dart';
 import 'package:hci/NewTaskPage.dart';
 import 'package:hci/Onboarding/OnboardingScreen.dart';
 import 'package:hci/StatsPage.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
   runApp(const MyApp());
@@ -16,8 +17,20 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: OnBoardingScreen(),
-      //const MyHomePage(title: "Today's Tasks"),
+      home: FutureBuilder(
+        future: SharedPreferences.getInstance(),
+        builder: (context, snapshot){
+          if(snapshot.connectionState == ConnectionState.done){
+            final prefs = snapshot.data as SharedPreferences;
+            final onboardingComplete = prefs.getBool('onboardingComplete') ?? false;
+            if(!onboardingComplete){
+              return OnBoardingScreen();
+            }
+            return MyHomePage();
+          }
+          return CircularProgressIndicator();
+        },
+      ),
     );
   }
 }
