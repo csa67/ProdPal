@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hci/database/db.dart';
 import 'package:hci/model/Task.dart';
+import 'package:hci/theme.dart';
 import 'package:hci/util.dart';
 import 'package:hci/TaskDetails.dart';
 
@@ -11,7 +12,7 @@ class CardView extends StatelessWidget{
   Widget build(BuildContext context){
     return MaterialApp(
       home:Scaffold(
-        appBar: AppBar(title: const Text('Task List Page'),),
+        appBar: AppBar(title: Text('Task List Page', style: AppTheme.headingStyle,),),
         body: const TasksList(),
       ),
     );

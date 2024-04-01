@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hci/CardView.dart';
 import 'package:hci/NewTaskPage.dart';
 import 'package:hci/StatsPage.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 void main() {
   runApp(const MyApp());
@@ -18,6 +19,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.pinkAccent),
         useMaterial3: true,
+        textTheme: GoogleFonts.nunitoSansTextTheme(),
       ),
       home: const MyHomePage(title: "Today's Tasks"),
     );
@@ -35,8 +37,6 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
 
   int _selectedIndex = 0;
-  static const TextStyle optionStyle = TextStyle(
-      fontSize: 30, fontWeight: FontWeight.bold);
   final List<Widget> _navOptions = <Widget>[
     const CardView(),
     const NewTaskPage(),
