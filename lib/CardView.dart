@@ -1,20 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:hci/database/db.dart';
 import 'package:hci/model/Task.dart';
-import 'package:hci/theme.dart';
 import 'package:hci/util.dart';
 import 'package:hci/TaskDetails.dart';
+import 'package:intl/intl.dart';
 
 class CardView extends StatelessWidget{
   const CardView({super.key});
 
   @override
   Widget build(BuildContext context){
-    return MaterialApp(
-      home:Scaffold(
-        appBar: AppBar(title: Text('Task List Page', style: AppTheme.headingStyle,),),
-        body: const TasksList(),
-      ),
+    return const Scaffold(
+      body: TasksList(),
     );
   }
 }
@@ -29,10 +26,12 @@ class TasksList extends StatefulWidget {
 class _TasksListState extends State<TasksList> {
 
   late Future<List<Task>> futureTasks;
+  late DateTime _selectedDate;
 
   @override
   void initState(){
     super.initState();
+    _selectedDate = DateTime.now();
     futureTasks = DatabaseHelper.instance.getTasks();
   }
 
@@ -40,44 +39,65 @@ class _TasksListState extends State<TasksList> {
   Widget build(BuildContext context) {
 
     return FutureBuilder<List<Task>>(
-        future: futureTasks,
-        builder: (context, snapshot)
-    {
-      if (snapshot.connectionState == ConnectionState.waiting) {
-        return const Center(child: CircularProgressIndicator());
-      } else if (snapshot.hasError) {
-        return Center(child: Text('Error: ${snapshot.error}'));
-      } else if (snapshot.data != null) {
-        final items = snapshot.data!;
+      future: futureTasks,
+      builder: (context, snapshot)
+      {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
+        } else if (snapshot.hasError) {
+          return Center(child: Text('Error: ${snapshot.error}'));
+        } else if (snapshot.data != null) {
+          final items = snapshot.data!;
 
-        // Assuming 'tasks' is your List<Task>
-        items.sort((Task a, Task b) {
-          return timeOfDayToMinutes(a.startTime).compareTo(
-              timeOfDayToMinutes(b.startTime));
-        });
+          // Assuming 'tasks' is your List<Task>
+          items.sort((Task a, Task b) {
+            return timeOfDayToMinutes(a.startTime).compareTo(
+                timeOfDayToMinutes(b.startTime));
+          });
 
-        return ListView.builder(
-          itemCount: items.length,
-          itemBuilder: (context, index) {
-            return TaskCard(
-              item: items[index],
-              onTaskCompletion: () {
-                setState(() {
-                  items.removeAt(index);
-                });
-              },
-              onTaskDismissal: () {
-                setState(() {
-                  items.removeAt(index);
-                });
-              }, startTime: items[index].startTime,);
-          },);
-      } else {
-        return const Center(child: Text("No tasks found"));
-      }
-    },
+          return Scaffold(
+              appBar: AppBar(
+                title: Text((DateFormat('MMMM yyyy')).format(_selectedDate)),
+                actions: [
+                  IconButton(icon: Icon(Icons.calendar_today),
+                    onPressed: () async {
+                      DateTime? picked = await showDatePicker(
+                        context: context,
+                        initialDate: _selectedDate,
+                        firstDate: DateTime(2011),
+                        lastDate: DateTime(2100),
+                      );
+                      if(picked!=null && picked!= _selectedDate){
+                        setState(() {
+                          _selectedDate = picked;
+                        });
+                      }
+                    },
+                  ),
+                ],
+              ),
+              body: ListView.builder(
+                itemCount: items.length,
+                itemBuilder: (context, index) {
+                  return TaskCard(
+                    item: items[index],
+                    onTaskCompletion: () {
+                      setState(() {
+                        items.removeAt(index);
+                      });
+                    },
+                    onTaskDismissal: () {
+                      setState(() {
+                        items.removeAt(index);
+                      });
+                    }, startTime: items[index].startTime,);
+                },));
+        } else {
+          return const Center(child: Text("No tasks found"));
+        }
+      },
     );
-    }
+  }
 
 }
 
