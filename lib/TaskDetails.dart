@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hci/timerPage.dart';
 import 'package:hci/model/Task.dart';

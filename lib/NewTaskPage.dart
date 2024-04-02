@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hci/CardView.dart';
 import 'package:hci/database/db.dart';
 import 'package:hci/DurationPriority.dart';
 import 'package:hci/model/Task.dart' as taskmodel;
@@ -17,10 +18,23 @@ class NewTaskPage extends StatelessWidget{
             width: MediaQuery.of(context).size.width,
             child: ElevatedButton(
               onPressed: () async {
-                if(_taskKey.currentState!=null){
-                  final newTask = _taskKey.currentState!.createTaskFromInput();
+                if (_taskKey.currentState != null) {
+                  try {
+                    final newTask = _taskKey.currentState!.createTaskFromInput();
+                  // Attempt to insert the new task into the database.
                   await DatabaseHelper.instance.insertTask(newTask);
-                  Navigator.pop(context);
+                  // If successful, navigate to the CardView.
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => CardView()),
+                  );
+                } catch (e) {
+                  // If an error occurs, print it to the console or show a UI error message.
+                  print('Error inserting task: $e');
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Failed to add task')),
+                  );
+                }
                 }
 
               },
@@ -51,8 +65,8 @@ class _TaskState extends State<Task>{
   DateTime? currentDate;
   bool isDateTileExpanded = false;
   int _selectedValue = 1;
-  late TimeOfDay _startTime;
-  late TimeOfDay _endTime;
+  late TimeOfDay _startTime = TimeOfDay.now();
+  late TimeOfDay _endTime = TimeOfDay(hour: TimeOfDay.now().hour + 1, minute: TimeOfDay.now().minute);
   taskmodel.TaskPriority _selectedPriority = taskmodel.TaskPriority.low;
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();

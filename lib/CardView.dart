@@ -90,7 +90,8 @@ class _TasksListState extends State<TasksList> {
                       setState(() {
                         items.removeAt(index);
                       });
-                    }, startTime: items[index].startTime,);
+                    }, startTime: items[index].startTime,
+                  endTime: items[index].endTime,);
                 },));
         } else {
           return const Center(child: Text("No tasks found"));
@@ -104,6 +105,7 @@ class _TasksListState extends State<TasksList> {
 class TaskCard extends StatelessWidget {
   final Task item;
   final TimeOfDay startTime;
+  final TimeOfDay endTime;
   final VoidCallback onTaskCompletion;
   final VoidCallback onTaskDismissal;
 
@@ -111,27 +113,23 @@ class TaskCard extends StatelessWidget {
     super.key,
     required this.item,
     required this.startTime,
+    required this.endTime,
     required this.onTaskCompletion,
     required this.onTaskDismissal,
   });
 
+  String _formatTimeOfDay(TimeOfDay tod) {
+    final now = DateTime.now();
+    final dt = DateTime(now.year, now.month, now.day, tod.hour, tod.minute);
+    final format = DateFormat.jm(); // Use the format that suits your needs
+    return format.format(dt);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Dismissible(
-      key: Key(item.title),
+      key: Key(item.id), // Make sure to use a unique key like item's id
       direction: DismissDirection.horizontal,
-      secondaryBackground: Container(
-        color: Colors.green,
-        alignment: Alignment.centerRight,
-        padding: const EdgeInsets.only(right: 20.0),
-        child: const Icon(Icons.done_outlined),
-      ),
-      background: Container(
-        color: Colors.red,
-        alignment: Alignment.centerLeft,
-        padding: const EdgeInsets.only(left: 20.0),
-        child: const Icon(Icons.archive_outlined),
-      ),
       onDismissed: (direction) {
         if (direction == DismissDirection.startToEnd) {
           item.isCompleted = true;
@@ -140,27 +138,63 @@ class TaskCard extends StatelessWidget {
           onTaskDismissal();
         }
       },
-      child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
-        width: double.infinity,
-        child: Card(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10.0),
-          ),
-          elevation: 4.0,
-          child: InkWell(
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => TaskDetails(task: item,)),
-              );
-            },
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Text(item.title),
+      background: Container(
+        color: Colors.red,
+        alignment: Alignment.centerLeft,
+        padding: const EdgeInsets.only(left: 20.0),
+        child: const Icon(Icons.delete_outline),
+      ),
+      secondaryBackground: Container(
+        color: Colors.green,
+        alignment: Alignment.centerRight,
+        padding: const EdgeInsets.only(right: 20.0),
+        child: const Icon(Icons.check),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 4.0),
+        child: Row(
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(left: 8.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Text(
+                    _formatTimeOfDay(startTime),
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                ],
+              ),
             ),
-          ),
+            Expanded(
+              child: Card(
+                margin: const EdgeInsets.only(left: 8.0, right: 8.0),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+                elevation: 4.0,
+                child: InkWell(
+                  onTap: () {
+                    // Navigator.push to your task details page
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => TaskDetails(task: item)),);
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          item.title,
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        Text("${_formatTimeOfDay(startTime)} - ${_formatTimeOfDay(endTime)}"),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );
