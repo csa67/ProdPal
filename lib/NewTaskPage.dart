@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:hci/CardView.dart';
 import 'package:hci/database/db.dart';
 import 'package:hci/DurationPriority.dart';
+import 'package:hci/main.dart';
 import 'package:hci/model/Task.dart' as taskmodel;
 
 GlobalKey<_TaskState> _taskKey = GlobalKey();
@@ -23,12 +23,13 @@ class NewTaskPage extends StatelessWidget{
                     final newTask = _taskKey.currentState!.createTaskFromInput();
                   // Attempt to insert the new task into the database.
                   await DatabaseHelper.instance.insertTask(newTask);
-                  // If successful, navigate to the CardView.
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => CardView()),
-                  );
-                } catch (e) {
+                    Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(builder: (context) => const MyHomePage(title: 'Today\'s Tasks',)), // Assuming MyHomePage accepts a parameter to select the initial tab
+                          (Route<dynamic> route) => false,
+                    );
+
+                  } catch (e) {
                   // If an error occurs, print it to the console or show a UI error message.
                   print('Error inserting task: $e');
                   ScaffoldMessenger.of(context).showSnackBar(
