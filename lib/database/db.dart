@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:hci/model/Task.dart';
+import 'package:intl/intl.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -57,13 +58,31 @@ class DatabaseHelper {
     );
   }
 
-  Future<List<Task>> getTasks() async {
+  Future<List<Task>> getTasks(DateTime forDate) async {
     final db = await database;
-    final List<Map<String, dynamic>> taskMaps = await db.query('taskslist');
+    final DateFormat formatter = DateFormat('yyyy-MM-dd');
+    final String formattedDate = formatter.format(forDate);
+
+    // Assuming the 'date' field is stored as TEXT in the format 'YYYY-MM-DD'
+    final List<Map<String, dynamic>> taskMaps = await db.query(
+      'taskslist',
+      where: "date(date) = ?",
+      whereArgs: [formattedDate],
+    );
 
     return List.generate(taskMaps.length, (i) {
       return Task.fromMap(taskMaps[i]);
     });
   }
+
+
+  // Future<List<Task>> getTasks() async {
+  //   final db = await database;
+  //   final List<Map<String, dynamic>> taskMaps = await db.query('taskslist');
+  //
+  //   return List.generate(taskMaps.length, (i) {
+  //     return Task.fromMap(taskMaps[i]);
+  //   });
+  // }
 
 }

@@ -5,11 +5,11 @@ import 'package:hci/util.dart';
 import 'package:hci/TaskDetails.dart';
 import 'package:intl/intl.dart';
 
-class CardView extends StatelessWidget{
+class CardView extends StatelessWidget {
   const CardView({super.key});
 
   @override
-  Widget build(BuildContext context){
+  Widget build(BuildContext context) {
     return const Scaffold(
       body: TasksList(),
     );
@@ -24,59 +24,65 @@ class TasksList extends StatefulWidget {
 }
 
 class _TasksListState extends State<TasksList> {
-
   late Future<List<Task>> futureTasks;
   late DateTime _selectedDate;
 
   @override
-  void initState(){
+  void initState() {
     super.initState();
     _selectedDate = DateTime.now();
-    futureTasks = DatabaseHelper.instance.getTasks();
+    futureTasks = DatabaseHelper.instance.getTasks(_selectedDate);
   }
 
   @override
   Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text((DateFormat('MMMM yyyy')).format(_selectedDate)),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.pending_actions_sharp),
+            onPressed: () {
+              //
+            },
+          ),
+          IconButton(
+            icon: const Icon(Icons.calendar_today),
+            onPressed: () async {
+              DateTime? picked = await showDatePicker(
+                context: context,
+                initialDate: _selectedDate,
+                firstDate: DateTime(2011),
+                lastDate: DateTime(2100),
+              );
+              if (picked != null && picked != _selectedDate) {
+                setState(() {
+                  _selectedDate = picked;
+                  futureTasks = DatabaseHelper.instance.getTasks(_selectedDate);
+                });
+              }
+            },
+          ),
+        ],
+      ),
+      body: FutureBuilder<List<Task>>(
+        future: futureTasks,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return Center(child: Text('Error: ${snapshot.error}'));
+          } else if (snapshot.data != null) {
+            final items = snapshot.data!;
 
-    return FutureBuilder<List<Task>>(
-      future: futureTasks,
-      builder: (context, snapshot)
-      {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(child: CircularProgressIndicator());
-        } else if (snapshot.hasError) {
-          return Center(child: Text('Error: ${snapshot.error}'));
-        } else if (snapshot.data != null) {
-          final items = snapshot.data!;
+            if (items.isNotEmpty) {
+              // Assuming 'tasks' is your List<Task>
+              items.sort((Task a, Task b) {
+                return timeOfDayToMinutes(a.startTime)
+                    .compareTo(timeOfDayToMinutes(b.startTime));
+              });
 
-          // Assuming 'tasks' is your List<Task>
-          items.sort((Task a, Task b) {
-            return timeOfDayToMinutes(a.startTime).compareTo(
-                timeOfDayToMinutes(b.startTime));
-          });
-
-          return Scaffold(
-              appBar: AppBar(
-                title: Text((DateFormat('MMMM yyyy')).format(_selectedDate)),
-                actions: [
-                  IconButton(icon: Icon(Icons.calendar_today),
-                    onPressed: () async {
-                      DateTime? picked = await showDatePicker(
-                        context: context,
-                        initialDate: _selectedDate,
-                        firstDate: DateTime(2011),
-                        lastDate: DateTime(2100),
-                      );
-                      if(picked!=null && picked!= _selectedDate){
-                        setState(() {
-                          _selectedDate = picked;
-                        });
-                      }
-                    },
-                  ),
-                ],
-              ),
-              body: ListView.builder(
+              return ListView.builder(
                 itemCount: items.length,
                 itemBuilder: (context, index) {
                   return TaskCard(
@@ -90,16 +96,22 @@ class _TasksListState extends State<TasksList> {
                       setState(() {
                         items.removeAt(index);
                       });
-                    }, startTime: items[index].startTime,
-                  endTime: items[index].endTime,);
-                },));
-        } else {
-          return const Center(child: Text("No tasks found"));
-        }
-      },
+                    },
+                    startTime: items[index].startTime,
+                    endTime: items[index].endTime,
+                  );
+                },
+              );
+            } else {
+              return const Center(child: Text("No tasks found"));
+            }
+          } else {
+            return const Center(child: Text("No tasks found"));
+          }
+        },
+      ),
     );
   }
-
 }
 
 class TaskCard extends StatelessWidget {
@@ -128,7 +140,8 @@ class TaskCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Dismissible(
-      key: Key(item.id), // Make sure to use a unique key like item's id
+      key: Key(item.id),
+      // Make sure to use a unique key like item's id
       direction: DismissDirection.horizontal,
       onDismissed: (direction) {
         if (direction == DismissDirection.startToEnd) {
@@ -161,7 +174,7 @@ class TaskCard extends StatelessWidget {
                 children: <Widget>[
                   Text(
                     _formatTimeOfDay(startTime),
-                    style: TextStyle(fontWeight: FontWeight.bold),
+                    style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
                 ],
               ),
@@ -176,7 +189,11 @@ class TaskCard extends StatelessWidget {
                 child: InkWell(
                   onTap: () {
                     // Navigator.push to your task details page
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => TaskDetails(task: item)),);
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => TaskDetails(task: item)),
+                    );
                   },
                   child: Padding(
                     padding: const EdgeInsets.all(16.0),
@@ -185,9 +202,10 @@ class TaskCard extends StatelessWidget {
                       children: [
                         Text(
                           item.title,
-                          style: TextStyle(fontWeight: FontWeight.bold),
+                          style: const TextStyle(fontWeight: FontWeight.bold),
                         ),
-                        Text("${_formatTimeOfDay(startTime)} - ${_formatTimeOfDay(endTime)}"),
+                        Text(
+                            "${_formatTimeOfDay(startTime)} - ${_formatTimeOfDay(endTime)}"),
                       ],
                     ),
                   ),
