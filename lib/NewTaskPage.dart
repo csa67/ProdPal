@@ -3,58 +3,25 @@ import 'package:hci/database/db.dart';
 import 'package:hci/DurationPriority.dart';
 import 'package:hci/main.dart';
 import 'package:hci/model/Task.dart' as taskmodel;
-
-GlobalKey<_TaskState> _taskKey = GlobalKey();
+import 'package:hci/util.dart';
 
 class NewTaskPage extends StatelessWidget{
-  const NewTaskPage({super.key});
+  final taskmodel.Task? taskToEdit;
+
+  const NewTaskPage({super.key, this.taskToEdit});
 
   @override
   Widget build(BuildContext context){
     return Scaffold(
-        body: Task(key: _taskKey),
-        persistentFooterButtons: [
-          SizedBox(
-            width: MediaQuery.of(context).size.width,
-            child: ElevatedButton(
-              onPressed: () async {
-                if (_taskKey.currentState != null) {
-                  try {
-                    final newTask = _taskKey.currentState!.createTaskFromInput();
-                  // Attempt to insert the new task into the database.
-                  await DatabaseHelper.instance.insertTask(newTask);
-                    Navigator.pushAndRemoveUntil(
-                      context,
-                      MaterialPageRoute(builder: (context) => const MyHomePage(title: 'Today\'s Tasks',)), // Assuming MyHomePage accepts a parameter to select the initial tab
-                          (Route<dynamic> route) => false,
-                    );
-
-                  } catch (e) {
-                  // If an error occurs, print it to the console or show a UI error message.
-                  print('Error inserting task: $e');
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('Failed to add task')),
-                  );
-                }
-                }
-
-              },
-              style: ElevatedButton.styleFrom(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(40), // Ensures the button is square-edged
-                ),
-                minimumSize: const Size.fromHeight(50), // Set the button's height
-              ),
-              child: const Text('Add Task'),
-            ),
-          ),
-        ],
+        body: Task(taskToEdit: taskToEdit),
     );
   }
 }
 
 class Task extends StatefulWidget{
-  const Task({super.key});
+  final taskmodel.Task? taskToEdit;
+
+  const Task({super.key, this.taskToEdit});
 
   @override
   State<Task> createState() => _TaskState();
@@ -72,6 +39,20 @@ class _TaskState extends State<Task>{
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
 
+  @override
+  void initState(){
+    super.initState();
+    if(widget.taskToEdit != null){
+      _titleController.text = widget.taskToEdit!.title;
+      _descriptionController.text = widget.taskToEdit!.description;
+      _selectedPriority = widget.taskToEdit!.priority;
+      selectedDate = widget.taskToEdit!.date;
+      currentDate = widget.taskToEdit!.date;
+      _startTime = timeFromTask(formatTimeOfDay(widget.taskToEdit!.startTime));
+      _endTime = timeFromTask(formatTimeOfDay(widget.taskToEdit!.endTime));
+    }
+  }
+
   void _onApplyButtonPressed() {
     setState(() {
       isDateTileExpanded = false;
@@ -81,17 +62,35 @@ class _TaskState extends State<Task>{
 
   taskmodel.Task createTaskFromInput() {
     // Ensure all inputs are validated before creating the Task object
-    return taskmodel.Task(
-      id: DateTime.now().millisecondsSinceEpoch.toString(),
-      title: _titleController.text,
-      description: _descriptionController.text,
-      date: selectedDate ?? DateTime.now(),
-      startTime: _startTime,
-      endTime: _endTime,
-      tag: 'ExampleTag', // This should ideally come from user input
-      priority: _selectedPriority,
-      isCompleted: false,
-    );
+    if(widget.taskToEdit!=null){
+      return taskmodel.Task(
+        id: widget.taskToEdit!.id, // Keep the original task id
+        title: _titleController.text,
+        description: _descriptionController.text,
+        date: selectedDate ?? DateTime.now(),
+        startTime: _startTime,
+        endTime: _endTime,
+        tag: widget.taskToEdit!.tag, // Keep the original tag or update as needed
+        priority: _selectedPriority,
+        isCompleted: widget.taskToEdit!.isCompleted,
+      );
+    }else {
+      return taskmodel.Task(
+        id: DateTime
+            .now()
+            .millisecondsSinceEpoch
+            .toString(),
+        title: _titleController.text,
+        description: _descriptionController.text,
+        date: selectedDate ?? DateTime.now(),
+        startTime: _startTime,
+        endTime: _endTime,
+        tag: 'ExampleTag',
+        // This should ideally come from user input
+        priority: _selectedPriority,
+        isCompleted: false,
+      );
+    }
   }
 
 Widget _buildDatePicker() {
@@ -117,7 +116,8 @@ Widget _buildDatePicker() {
 
   @override
   Widget build(BuildContext context) {
-    return ListView(
+    return Scaffold(
+      body: ListView(
       padding: const EdgeInsets.all(10),
       children: <Widget>[
         TextField(
@@ -263,6 +263,39 @@ Widget _buildDatePicker() {
           ],
         ),
       ],
+    ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      floatingActionButton:  SizedBox(
+        width: MediaQuery.of(context).size.width,
+        child: ElevatedButton(
+          onPressed: () async {
+            try {
+              final newTask = createTaskFromInput();
+              // Attempt to insert the new task into the database.
+              await DatabaseHelper.instance.insertTask(newTask);
+              Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(builder: (context) => const MyHomePage(title: 'Today\'s Tasks',)), // Assuming MyHomePage accepts a parameter to select the initial tab
+                    (Route<dynamic> route) => false,
+              );
+
+            } catch (e) {
+              // If an error occurs, print it to the console or show a UI error message.
+              print('Error inserting task: $e');
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Failed to add task')),
+              );
+            }
+          },
+          style: ElevatedButton.styleFrom(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(40), // Ensures the button is square-edged
+            ),
+            minimumSize: const Size.fromHeight(50), // Set the button's height
+          ),
+          child: const Text('Add Task'),
+        ),
+      ),
     );
   }
 }

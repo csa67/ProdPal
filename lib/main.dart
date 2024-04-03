@@ -27,7 +27,8 @@ class MyApp extends StatelessWidget {
 }
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
+  final selectedIndex;
+  const MyHomePage({super.key, required this.title, this.selectedIndex});
   final String title;
 
   @override
