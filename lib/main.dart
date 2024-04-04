@@ -27,50 +27,81 @@ class MyApp extends StatelessWidget {
 }
 
 class MyHomePage extends StatefulWidget {
-  final selectedIndex;
-  const MyHomePage({super.key, required this.title, this.selectedIndex});
   final String title;
+  const MyHomePage({super.key, required this.title});
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-
   int _selectedIndex = 0;
-  final List<Widget> _navOptions = <Widget>[
-    const CardView(),
-    const NewTaskPage(),
-    const StatsPage(),
+  final List<GlobalKey<NavigatorState>> _navigatorKeys = [
+    GlobalKey<NavigatorState>(),
+    GlobalKey<NavigatorState>(),
+    GlobalKey<NavigatorState>(),
+    // Add a key for each tab
   ];
 
-  void _onOptionSelected(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
+  void _selectTab(int index) {
+    if (index == _selectedIndex) {
+      // Pop to first route if the user selects the current tab again
+      _navigatorKeys[index].currentState?.popUntil((route) => route.isFirst);
+    } else {
+      setState(() => _selectedIndex = index);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(widget.title),
-      ),
       body: IndexedStack(
         index: _selectedIndex,
-        children: _navOptions,
+        children: [
+          _buildOffstageNavigator(0),
+          _buildOffstageNavigator(1),
+          _buildOffstageNavigator(2),
+          // Add an offstage navigator for each tab
+        ],
       ),
       bottomNavigationBar: BottomNavigationBar(
-        items: const <BottomNavigationBarItem>[
+        items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
           BottomNavigationBarItem(icon: Icon(Icons.add), label: 'Add Task'),
           BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
+          // Define items for each tab
         ],
         currentIndex: _selectedIndex,
-        selectedItemColor: Colors.pinkAccent,
-        onTap: _onOptionSelected,
+        onTap: _selectTab,
       ),
     );
+  }
+
+  Widget _buildOffstageNavigator(int index) {
+    return Offstage(
+      offstage: _selectedIndex != index,
+      child: Navigator(
+        key: _navigatorKeys[index],
+        onGenerateRoute: (routeSettings) {
+          return MaterialPageRoute(
+            builder: (context) => _buildPage(index), // Build the page based on the index
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _buildPage(int index) {
+    switch (index) {
+      case 0:
+        return CardView();
+      case 1:
+        return NewTaskPage();
+      case 2:
+        return StatsPage();
+    // Return the appropriate page for each tab
+      default:
+        return Container();
+    }
   }
 }
