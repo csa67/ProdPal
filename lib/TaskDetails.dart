@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hci/NewTaskPage.dart' as newTask;
 import 'package:hci/model/Task.dart';
+import 'package:hci/timerPage.dart';
 import 'package:hci/util.dart';
 
 class TaskDetails extends StatelessWidget {
@@ -91,6 +92,9 @@ class WorkoutScreen extends StatelessWidget {
         ),
         onPressed: () {
           // Handle the button tap
+          Navigator.of(context).push(
+            MaterialPageRoute(builder: (context) => const TimerPage()),
+          );
         },
         child: const Text(
           'Focus Mode',

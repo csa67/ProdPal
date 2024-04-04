@@ -10,7 +10,6 @@ class TimerPage extends StatelessWidget {
     // Assuming we are passing the duration of 30 seconds to the TimerCircle widget.
     return MaterialApp(
       home: Scaffold(
-        backgroundColor: Colors.teal,
         body: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -23,8 +22,9 @@ class TimerPage extends StatelessWidget {
               padding: const EdgeInsets.all(16.0),
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  foregroundColor: Colors.teal,
-                  backgroundColor: Colors.white, // Text color
+                  foregroundColor: Colors.pinkAccent,
+                  backgroundColor: Colors.white,
+                  shadowColor: Colors.pinkAccent// Text color
                 ),
                 onPressed: () {
                   Navigator.of(context).push(
@@ -94,7 +94,7 @@ class _TimerCircleState extends State<TimerCircle> {
             value: _progress, // Value now represents actual progress
             strokeWidth: 6,
             backgroundColor: Colors.grey,
-            color: Colors.white,
+            color: Colors.pinkAccent,
           ),
         ),
         Text(
@@ -102,7 +102,7 @@ class _TimerCircleState extends State<TimerCircle> {
           style: const TextStyle(
             fontWeight: FontWeight.bold,
             fontSize: 50,
-            color: Colors.white,
+            color: Colors.pinkAccent,
           ),
         ),
       ],

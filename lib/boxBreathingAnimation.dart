@@ -7,7 +7,6 @@ class BoxBreathing extends StatelessWidget {
   Widget build(BuildContext context) {
     return const MaterialApp(
       home: Scaffold(
-        backgroundColor: Colors.teal,
         body: Center(child: BreathingCircle()),
       ),
     );
@@ -188,22 +187,59 @@ class _BreathingCircleState extends State<BreathingCircle> with SingleTickerProv
                 height: squareSize,
                 decoration: BoxDecoration(
                   color: Colors.transparent,
-                  border: Border.all(color: Colors.white, width: 6),
+                  border: Border.all(color: Colors.grey, width: 6),
                   borderRadius: BorderRadius.circular(20),
                 ),
               ),
               Container(
                 width: innerCircleSize, // Consider the border width for inner circle size
                 height: innerCircleSize,
-                decoration: const BoxDecoration(
+                decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   color: Colors.white,
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.pink.withOpacity(0.2),
+                      blurRadius: 5,
+                      spreadRadius: 1,
+                      offset: Offset(0, 3),
+                    ),
+                    BoxShadow(
+                      color: Colors.pink.withOpacity(0.3),
+                      blurRadius: 10,
+                      spreadRadius: 1,
+                      offset: Offset(0, 3),
+                    ),
+                    BoxShadow(
+                      color: Colors.grey.withOpacity(0.4),
+                      blurRadius: 15,
+                      spreadRadius: 1,
+                      offset: Offset(0, 3),
+                    ),
+                    BoxShadow(
+                      color: Colors.grey.withOpacity(0.5),
+                      blurRadius: 20,
+                      spreadRadius: 1,
+                      offset: Offset(0, 3),
+                    ),
+                    // Add more shadows with increasing blurRadius and lighter colors as needed
+                  ],
                 ),
+
+              // Container(
+              //   width: innerCircleSize, // Consider the border width for inner circle size
+              //   height: innerCircleSize,
+              //   decoration: const BoxDecoration(
+              //     shape: BoxShape.circle,
+              //     color: Colors.white,
+              //     boxShadow: BoxShadow(spreadRadius: 5.0)
+              //
+              //   ),
                 alignment: Alignment.center,
                 child: Text(
                   state.label,
                   style: const TextStyle(
-                    color: Colors.black,
+                    color: Colors.pinkAccent,
                     fontSize: 24,
                   ),
                 ),
@@ -215,7 +251,7 @@ class _BreathingCircleState extends State<BreathingCircle> with SingleTickerProv
                   width: ballDiameter,
                   height: ballDiameter,
                   decoration: const BoxDecoration(
-                    color: Colors.white, // Ball color is black
+                    color: Colors.pinkAccent,
                     shape: BoxShape.circle,
                   ),
                 ),
