@@ -17,3 +17,8 @@ String formatTimeOfDay(TimeOfDay? time) {
   final minute = time.minute.toString().padLeft(2, '0');
   return "$hour:$minute";
 }
+
+bool isToday(DateTime date) {
+  DateTime now = DateTime.now();
+  return date.year == now.year && date.month == now.month && date.day == now.day;
+}

@@ -26,12 +26,23 @@ class TasksList extends StatefulWidget {
 class _TasksListState extends State<TasksList> {
   late Future<List<Task>> futureTasks;
   late DateTime _selectedDate;
+  List<DateTime> _weekDays = List.empty();
 
   @override
   void initState() {
     super.initState();
     _selectedDate = DateTime.now();
+    _weekDays = _generateWeekDays(_selectedDate);
     futureTasks = DatabaseHelper.instance.getTasks(_selectedDate);
+  }
+
+  List<DateTime> _generateWeekDays(DateTime date){
+    int currentDay = date.weekday; //1-Monday, 7-Sunday
+    int differenceToWeekStart = currentDay - DateTime.monday;
+    List<DateTime> weekDays = List.generate(7, (index){
+      return date.subtract(Duration(days: differenceToWeekStart - index));
+    });
+    return weekDays;
   }
 
   @override
@@ -65,51 +76,82 @@ class _TasksListState extends State<TasksList> {
           ),
         ],
       ),
-      body: FutureBuilder<List<Task>>(
-        future: futureTasks,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}'));
-          } else if (snapshot.data != null) {
-            final items = snapshot.data!;
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(
+            height: 70,
+            child: ListView.separated(
+              scrollDirection: Axis.horizontal,
+                padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 8),
+                itemCount: _weekDays.length,
+                separatorBuilder: (context,index) => const SizedBox(width: 8),
+              itemBuilder: (context, index){
+                DateTime weekDay = _weekDays[index];
+                return GestureDetector(
+                  onTap: (){
+                    setState(() {
+                      _selectedDate = weekDay;
+                      futureTasks = DatabaseHelper.instance.getTasks(_selectedDate);
+                    });
+                  },
+                  child: DateCard(
+                    date: weekDay,
+                    isSelected: _selectedDate == weekDay,
+                  ),
+                );
+              }
+            ),
+          ),
+          Expanded(child:
+          FutureBuilder<List<Task>>(
+            future: futureTasks,
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(child: CircularProgressIndicator());
+              } else if (snapshot.hasError) {
+                return Center(child: Text('Error: ${snapshot.error}'));
+              } else if (snapshot.data != null) {
+                final items = snapshot.data!;
 
-            if (items.isNotEmpty) {
-              // Assuming 'tasks' is your List<Task>
-              items.sort((Task a, Task b) {
-                return timeOfDayToMinutes(a.startTime)
-                    .compareTo(timeOfDayToMinutes(b.startTime));
-              });
+                if (items.isNotEmpty) {
+                  // Assuming 'tasks' is your List<Task>
+                  items.sort((Task a, Task b) {
+                    return timeOfDayToMinutes(a.startTime)
+                        .compareTo(timeOfDayToMinutes(b.startTime));
+                  });
 
-              return ListView.builder(
-                itemCount: items.length,
-                itemBuilder: (context, index) {
-                  return TaskCard(
-                    item: items[index],
-                    onTaskCompletion: () {
-                      setState(() {
-                        items.removeAt(index);
-                      });
+                  return ListView.builder(
+                    itemCount: items.length,
+                    itemBuilder: (context, index) {
+                      return TaskCard(
+                        item: items[index],
+                        onTaskCompletion: () {
+                          setState(() {
+                            items.removeAt(index);
+                          });
+                        },
+                        onTaskDismissal: () {
+                          setState(() {
+                            items.removeAt(index);
+                          });
+                        },
+                        startTime: items[index].startTime,
+                        endTime: items[index].endTime,
+                      );
                     },
-                    onTaskDismissal: () {
-                      setState(() {
-                        items.removeAt(index);
-                      });
-                    },
-                    startTime: items[index].startTime,
-                    endTime: items[index].endTime,
                   );
-                },
-              );
-            } else {
-              return const Center(child: Text("No tasks found"));
-            }
-          } else {
-            return const Center(child: Text("No tasks found"));
-          }
-        },
-      ),
+                } else {
+                  return const Center(child: Text("No tasks found"));
+                }
+              } else {
+                return const Center(child: Text("No tasks found"));
+              }
+            },
+          ),
+          ),
+        ],
+      )
     );
   }
 }
@@ -218,3 +260,37 @@ class TaskCard extends StatelessWidget {
     );
   }
 }
+
+class DateCard extends StatelessWidget{
+  final DateTime date;
+  final bool isSelected;
+
+  const DateCard({
+    Key? key,
+    required this.date,
+    this.isSelected = false,
+}): super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 50,
+      decoration: BoxDecoration(
+        color: isSelected? Colors.pinkAccent : Colors.grey,
+        borderRadius: BorderRadius.circular(10),
+        border: isToday(date) ? Border.all(style: BorderStyle.solid,width: 4,color: Colors.pink.shade200) : null,
+      ),
+      child: Center(
+        child: Text(
+          DateFormat('E\nd').format(date),
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            color: isSelected ? Colors.white : Colors.black
+          ),
+        ),
+      ),
+    );
+  }
+
+}
+

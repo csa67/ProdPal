@@ -117,6 +117,7 @@ Widget _buildDatePicker() {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(title: Text("New Task"),),
       body: ListView(
       padding: const EdgeInsets.all(10),
       children: <Widget>[
