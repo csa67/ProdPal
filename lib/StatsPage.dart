@@ -1,32 +1,39 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:hci/MotivationScreen.dart';
 
 class StatsPage extends StatelessWidget {
   const StatsPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
+    return Scaffold(
       body: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 20.0),
+        padding: const EdgeInsets.symmetric(horizontal: 20.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             // Provide some spacing from the top of the screen.
-            Text(
+            const Text(
               'Hello,\nSophie!',
               style: TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
               ),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             //Scrollable list of days
-            ScrollableDays(),
-            SizedBox(height: 20),
+            const ScrollableDays(),
+            const SizedBox(height: 20),
             // Activity progress indicator
-            ActivityProgressIndicator(),
+            const ActivityProgressIndicator(),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).push(MaterialPageRoute(builder: (context) => QuoteScreen()));
+              },
+              child: const Text('Motivate Me!'),
+            ),
           ],
         ),
       ),
@@ -105,7 +112,7 @@ class ActivityProgressIndicator extends StatelessWidget {
               child: CircularProgressIndicator(
                 value: progressValue, // Current progress
                 backgroundColor: Colors.grey[800],
-                valueColor: AlwaysStoppedAnimation<Color>(Colors.pink),
+                valueColor: const AlwaysStoppedAnimation<Color>(Colors.pink),
                 strokeWidth: 6, // Thinner stroke width
               ),
             ),
@@ -119,7 +126,7 @@ class ActivityProgressIndicator extends StatelessWidget {
             ),
           ],
         ),
-        SizedBox(width: 20), // Spacing between the progress indicator and the text
+        const SizedBox(width: 20), // Spacing between the progress indicator and the text
         // Activities Text
         Expanded( // Use Expanded to take up remaining space
           child: Column(

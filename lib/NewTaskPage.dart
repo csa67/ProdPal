@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:hci/CardView.dart';
 import 'package:hci/database/db.dart';
 import 'package:hci/DurationPriority.dart';
-import 'package:hci/main.dart';
 import 'package:hci/model/Task.dart' as taskmodel;
 import 'package:hci/util.dart';
 
@@ -117,7 +117,7 @@ Widget _buildDatePicker() {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("New Task"),),
+      appBar: AppBar(title: const Text("New Task"),),
       body: ListView(
       padding: const EdgeInsets.all(10),
       children: <Widget>[
@@ -276,13 +276,12 @@ Widget _buildDatePicker() {
               await DatabaseHelper.instance.insertTask(newTask);
               Navigator.pushAndRemoveUntil(
                 context,
-                MaterialPageRoute(builder: (context) => const MyHomePage(title: 'Today\'s Tasks',)), // Assuming MyHomePage accepts a parameter to select the initial tab
+                MaterialPageRoute(builder: (context) => const CardView()), // Assuming MyHomePage accepts a parameter to select the initial tab
                     (Route<dynamic> route) => false,
               );
 
             } catch (e) {
-              // If an error occurs, print it to the console or show a UI error message.
-              print('Error inserting task: $e');
+              // If an error occurs,show an error message.
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(content: Text('Failed to add task')),
               );
