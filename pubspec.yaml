@@ -60,6 +60,20 @@ flutter:
 
   uses-material-design: true
 
+  assets:
+    - assets/terrible_grey.png
+    - assets/terrible_color.png
+    - assets/bad_grey.png
+    - assets/bad_color.png
+    - assets/good_grey.png
+    - assets/good_color.png
+    - assets/okay_grey.png
+    - assets/okay_color.png
+    - assets/ex_grey.png
+    - assets/ex_color.png
+      # Add the rest of your emoji assets here
+
+
   # To add assets to your application, add an assets section, like this:
   # assets:
   #   - images/a_dot_burr.jpeg

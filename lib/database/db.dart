@@ -75,6 +75,12 @@ class DatabaseHelper {
     });
   }
 
+  // Future<List<Task>> getCompletedTasks(bool isDone) async{
+  //   final db = await database;
+  //
+  //   final List<Map<>
+  // }
+
 
   // Future<List<Task>> getTasks() async {
   //   final db = await database;

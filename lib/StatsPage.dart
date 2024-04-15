@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hci/MoodTrackerWidget.dart';
 import 'package:intl/intl.dart';
 import 'package:hci/MotivationScreen.dart';
 
@@ -28,6 +29,7 @@ class StatsPage extends StatelessWidget {
             const SizedBox(height: 20),
             // Activity progress indicator
             const ActivityProgressIndicator(),
+            MoodTrackerWidget(),
             ElevatedButton(
               onPressed: () {
                 Navigator.of(context).push(MaterialPageRoute(builder: (context) => QuoteScreen()));
