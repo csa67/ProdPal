@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:hci/CardView.dart';
 import 'package:hci/database/db.dart';
 import 'package:hci/DurationPriority.dart';
 import 'package:hci/model/Task.dart' as taskmodel;
@@ -7,21 +6,23 @@ import 'package:hci/util.dart';
 
 class NewTaskPage extends StatelessWidget{
   final taskmodel.Task? taskToEdit;
+  final VoidCallback? onTaskCreated;
 
-  const NewTaskPage({super.key, this.taskToEdit});
+  const NewTaskPage({super.key, this.taskToEdit, this.onTaskCreated});
 
   @override
   Widget build(BuildContext context){
     return Scaffold(
-        body: Task(taskToEdit: taskToEdit),
+        body: Task(taskToEdit: taskToEdit, onTaskCreated: onTaskCreated),
     );
   }
 }
 
 class Task extends StatefulWidget{
   final taskmodel.Task? taskToEdit;
+  final VoidCallback? onTaskCreated;
 
-  const Task({super.key, this.taskToEdit});
+  const Task({super.key, this.taskToEdit, this.onTaskCreated});
 
   @override
   State<Task> createState() => _TaskState();
@@ -112,6 +113,43 @@ Widget _buildDatePicker() {
         ),
       ],
     );
+  }
+
+  void clearForm() {
+    _titleController.clear();
+    _descriptionController.clear();
+    selectedDate = null;
+    _startTime = TimeOfDay.now();
+    _endTime = TimeOfDay(hour: TimeOfDay.now().hour + 1, minute: TimeOfDay.now().minute);
+    _selectedPriority = taskmodel.TaskPriority.low;
+    isDateTileExpanded = false;
+    _selectedValue = 1;
+    setState(() {});
+  }
+
+  void saveTaskAndNavigateBack(BuildContext context) async {
+    try {
+      final newTask = createTaskFromInput();
+      await DatabaseHelper.instance.insertTask(newTask);
+      clearForm();
+
+      if (widget.onTaskCreated != null) {
+        widget.onTaskCreated!();
+      }
+
+      if (Navigator.canPop(context)) {
+          int count = 0;
+          Navigator.popUntil(context, (route) {
+            return count++ == 2;
+          });
+        }
+
+        // Pops current page off the navigation stack if possible
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to add task: ${e.toString()}')),
+      );
+    }
   }
 
   @override
@@ -270,20 +308,7 @@ Widget _buildDatePicker() {
         width: MediaQuery.of(context).size.width,
         child: ElevatedButton(
           onPressed: () async {
-            try {
-              final newTask = createTaskFromInput();
-              await DatabaseHelper.instance.insertTask(newTask);
-              Navigator.pushAndRemoveUntil(
-                context,
-                MaterialPageRoute(builder: (context) => const CardView()), // Assuming MyHomePage accepts a parameter to select the initial tab
-                    (Route<dynamic> route) => false,
-              );
-
-            } catch (e) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('Failed to add task: ${e.toString()}')),
-              );
-            }
+           saveTaskAndNavigateBack(context);
           },
           style: ElevatedButton.styleFrom(
             shape: RoundedRectangleBorder(

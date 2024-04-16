@@ -58,6 +58,10 @@ class _MyHomePageState extends State<MyHomePage> {
     }
   }
 
+  void switchToTasksTab() {
+    _selectTab(0); // Switch to the first tab (index 0)
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -100,11 +104,11 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget _buildPage(int index) {
     switch (index) {
       case 0:
-        return CardView();
+        return const CardView();
       case 1:
-        return NewTaskPage();
+        return NewTaskPage(onTaskCreated: switchToTasksTab);
       case 2:
-        return StatsPage();
+        return const StatsPage();
     // Return the appropriate page for each tab
       default:
         return Container();

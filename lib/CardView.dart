@@ -63,7 +63,7 @@ class _TasksListState extends State<TasksList> {
             foregroundColor: Colors.white,
             backgroundColor:
                 _currentFilter == filter ? Colors.pinkAccent : Colors.grey[300],
-            padding: EdgeInsets.all(6),
+            padding: const EdgeInsets.all(6),
           ),
           child: Text(
             filter.label,
