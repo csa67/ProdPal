@@ -187,8 +187,9 @@ class TaskCard extends StatelessWidget {
       direction: DismissDirection.horizontal,
       onDismissed: (direction) {
         if (direction == DismissDirection.startToEnd) {
-          item.isCompleted = true;
-          onTaskCompletion();
+          DatabaseHelper.instance.updateTaskCompletion(item.id, true).then((_) {
+            onTaskCompletion();
+          });
         } else if (direction == DismissDirection.endToStart) {
           onTaskDismissal();
         }

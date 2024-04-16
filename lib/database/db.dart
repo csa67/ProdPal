@@ -75,6 +75,17 @@ class DatabaseHelper {
     });
   }
 
+  Future<void> updateTaskCompletion(String taskId, bool isCompleted) async{
+    final db = await database;
+    await db.update(
+      'taskslist',
+      {'isCompleted': isCompleted ? 1 : 0},
+      where: 'id = ?',
+      whereArgs: [taskId],
+    );
+  }
+
+}
   // Future<List<Task>> getCompletedTasks(bool isDone) async{
   //   final db = await database;
   //
@@ -91,4 +102,3 @@ class DatabaseHelper {
   //   });
   // }
 
-}
