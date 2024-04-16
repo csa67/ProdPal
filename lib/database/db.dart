@@ -58,16 +58,24 @@ class DatabaseHelper {
     );
   }
 
-  Future<List<Task>> getTasks(DateTime forDate) async {
+  Future<List<Task>> getTasks(DateTime forDate, {bool? completed}) async {
     final db = await database;
     final DateFormat formatter = DateFormat('yyyy-MM-dd');
     final String formattedDate = formatter.format(forDate);
 
-    // Assuming the 'date' field is stored as TEXT in the format 'YYYY-MM-DD'
+    String whereClause = "date(date) = ?";
+    List<dynamic> whereArgs = [formattedDate];
+
+    // Modify the query to optionally filter by the `isCompleted` status
+    if (completed != null) {
+      whereClause += " AND isCompleted = ?";
+      whereArgs.add(completed ? 1 : 0);
+    }
+
     final List<Map<String, dynamic>> taskMaps = await db.query(
       'taskslist',
-      where: "date(date) = ?",
-      whereArgs: [formattedDate],
+      where: whereClause,
+      whereArgs: whereArgs,
     );
 
     return List.generate(taskMaps.length, (i) {
@@ -75,15 +83,26 @@ class DatabaseHelper {
     });
   }
 
-  Future<void> updateTaskCompletion(String taskId, bool isCompleted) async{
+
+  Future<void> updateTaskCompletion(String taskId, bool isCompleted) async {
     final db = await database;
-    await db.update(
-      'taskslist',
-      {'isCompleted': isCompleted ? 1 : 0},
-      where: 'id = ?',
-      whereArgs: [taskId],
-    );
+    try {
+      int count = await db.update(
+        'taskslist',
+        {'isCompleted': isCompleted ? 1 : 0},
+        where: 'id = ?',
+        whereArgs: [taskId],
+      );
+      if (count == 0) {
+        print("No task updated: Check if task ID $taskId exists.");
+      } else {
+        print("$count task(s) marked as completed.");
+      }
+    } catch (e) {
+      print("Error updating task: $e");
+    }
   }
+
 
 }
   // Future<List<Task>> getCompletedTasks(bool isDone) async{

@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:hci/MoodTrackerWidget.dart';
 import 'package:intl/intl.dart';
@@ -15,9 +17,12 @@ class StatsPage extends StatefulWidget {
 class _StatsPageState extends State<StatsPage>{
   DateTime selectedDate = DateTime.now();
 
+  final GlobalKey<_ActivityProgressIndicatorState> _activityProgressIndicatorKey = GlobalKey();
+
   void _updateSelectedDate(DateTime newDate) {
     setState(() {
       selectedDate = newDate;
+      _activityProgressIndicatorKey.currentState?._updateProgress();
     });
   }
 
@@ -45,14 +50,25 @@ class _StatsPageState extends State<StatsPage>{
             ),
             const SizedBox(height: 20),
             // Activity progress indicator
-            ActivityProgressIndicator(date: selectedDate),
+            ActivityProgressIndicator(key: _activityProgressIndicatorKey, date: selectedDate),
+            const SizedBox(height: 10),
             MoodTrackerWidget(),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.of(context).push(MaterialPageRoute(builder: (context) => QuoteScreen()));
-              },
-              child: const Text('Motivate Me!'),
+            const SizedBox(height: 10),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.of(context).push(MaterialPageRoute(builder: (context) => QuoteScreen()));
+            },
+            style: ElevatedButton.styleFrom(
+              foregroundColor: Colors.white, backgroundColor: Colors.pinkAccent, // Text color
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(18.0), // Rounded corners - adjust the radius to match your MoodTrackerWidget
+              ),
+              padding: const EdgeInsets.all(12),
+              elevation: 5,
+              minimumSize: Size(150,150)// Elevation - adjust to your preference or match your MoodTrackerWidget
             ),
+            child: const Text('Motivate Me!', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),),
+          ),
           ],
         ),
       ),
@@ -160,11 +176,15 @@ class _ActivityProgressIndicatorState extends State<ActivityProgressIndicator>{
 
   Future<void> _updateProgress() async{
     List<Task> tasksonTheDay = await DatabaseHelper.instance.getTasks(widget.date);
-    totaltasks = tasksonTheDay.length;
-    completedtasks = tasksonTheDay.where((task) => task.isCompleted).length;
-    progressValue = totaltasks > 0 ? completedtasks / totaltasks : 0;
-
+    int Total = tasksonTheDay.length;
+    int completedTasks = tasksonTheDay.where((task) => task.isCompleted).length;
+    setState(() {
+      totaltasks = Total;
+      completedtasks = completedTasks;
+      progressValue = totaltasks > 0 ? completedtasks / totaltasks : 0;
+    });
   }
+
   @override
   Widget build(BuildContext context) {
 
@@ -173,11 +193,16 @@ class _ActivityProgressIndicatorState extends State<ActivityProgressIndicator>{
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        border: Border.all(
-          color: Colors.pink,
-          width: 2,
-        ),
-        borderRadius: BorderRadius.circular(12),
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(20),
+          boxShadow: [
+      BoxShadow(
+      color: Colors.grey.withOpacity(0.5),
+      spreadRadius: 2,
+      blurRadius: 4,
+      offset: const Offset(0, 3),
+    ),
+        ],
       ),
       child: Row(
       mainAxisAlignment: MainAxisAlignment.center, // Center the row contents horizontally
@@ -222,7 +247,7 @@ class _ActivityProgressIndicatorState extends State<ActivityProgressIndicator>{
                 ),
               ),
               Text(
-                '${completedtasks} of ${totaltasks} completed',
+                '$completedtasks of $totaltasks completed',
                 style: TextStyle(
                   color: Colors.grey[500],
                   fontSize: 14,

@@ -2,6 +2,15 @@ import 'package:flutter/material.dart';
 
 enum TaskPriority { low, medium, high }
 
+enum TaskFilter {
+  inProgress("In Progress"),
+  completed("Completed");
+
+  final String label;
+
+  const TaskFilter(this.label);
+}
+
 class Task {
   String id;
   String title;
