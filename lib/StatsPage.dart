@@ -2,9 +2,24 @@ import 'package:flutter/material.dart';
 import 'package:hci/MoodTrackerWidget.dart';
 import 'package:intl/intl.dart';
 import 'package:hci/MotivationScreen.dart';
+import 'package:hci/database/db.dart';
+import 'package:hci/model/Task.dart';
 
-class StatsPage extends StatelessWidget {
+class StatsPage extends StatefulWidget {
   const StatsPage({super.key});
+
+  @override
+  _StatsPageState createState() => _StatsPageState();
+}
+
+class _StatsPageState extends State<StatsPage>{
+  DateTime selectedDate = DateTime.now();
+
+  void _updateSelectedDate(DateTime newDate) {
+    setState(() {
+      selectedDate = newDate;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -25,10 +40,12 @@ class StatsPage extends StatelessWidget {
             ),
             const SizedBox(height: 20),
             //Scrollable list of days
-            const ScrollableDays(),
+            ScrollableDays(
+              onDateSelected: _updateSelectedDate,
+            ),
             const SizedBox(height: 20),
             // Activity progress indicator
-            const ActivityProgressIndicator(),
+            ActivityProgressIndicator(date: selectedDate),
             MoodTrackerWidget(),
             ElevatedButton(
               onPressed: () {
@@ -43,8 +60,24 @@ class StatsPage extends StatelessWidget {
   }
 }
 
-class ScrollableDays extends StatelessWidget {
-  const ScrollableDays({super.key});
+class ScrollableDays extends StatefulWidget {
+  final Function(DateTime) onDateSelected;
+
+  const ScrollableDays({super.key, required this.onDateSelected});
+
+  @override
+  State<StatefulWidget> createState() => _ScrollableDaysState();
+}
+
+class _ScrollableDaysState extends State<ScrollableDays> {
+  DateTime? selectedDate;
+  final DateTime today = DateTime.now();
+
+  @override
+  void initState() {
+    super.initState();
+    selectedDate = today;  // Initialize the selected date to today
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -60,35 +93,81 @@ class ScrollableDays extends StatelessWidget {
           DateFormat.E().format(date)[0]; // Short weekday (e.g., Mon, Tue)
           final displayDay = DateFormat.d().format(date);
 
-          return Container(
-            width: 50,
-            margin: const EdgeInsets.symmetric(horizontal: 2),
-            padding: const EdgeInsets.all(8),
-            decoration: BoxDecoration(
-              color: index == 0 ? Colors.pinkAccent : Colors.grey[800],
-              shape: BoxShape.circle,
-            ),
-            alignment: Alignment.center,
-            child: Text(
-              '$displayDate\n$displayDay',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                color: index == 0 ? Colors.white : Colors.grey[500],
+          bool isSelected = selectedDate?.year == date.year && selectedDate?.month == date.month && selectedDate?.day == date.day;
+          bool isToday = today.year == date.year &&
+              today.month == date.month &&
+              today.day == date.day;
+
+          return GestureDetector(
+            onTap: (){
+              setState(() {
+                selectedDate = date;
+                widget.onDateSelected(date);
+              });
+            },
+            child: Container(
+              width: 50,
+              margin: const EdgeInsets.symmetric(horizontal: 2),
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: isSelected ? Colors.pinkAccent : Colors.grey[800],
+                border: isToday? Border.all(color: Colors.pinkAccent, width: 2) : null,
+                shape: BoxShape.circle,
+              ),
+              alignment: Alignment.center,
+              child: Text(
+                '$displayDate\n$displayDay',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: isSelected || isToday ? Colors.white : Colors.grey[500],
+                ),
               ),
             ),
           );
         },));
   }
+
+
 }
 
-class ActivityProgressIndicator extends StatelessWidget {
-  const ActivityProgressIndicator({super.key});
+class ActivityProgressIndicator extends StatefulWidget {
+  final DateTime date;
+  const ActivityProgressIndicator({super.key, required this.date});
 
   @override
+  State<StatefulWidget> createState() => _ActivityProgressIndicatorState();
+  }
+
+class _ActivityProgressIndicatorState extends State<ActivityProgressIndicator>{
+  int totaltasks = 0;
+  int completedtasks = 0;
+  double progressValue = 0.0;
+
+  @override
+  void initState(){
+    super.initState();
+    _updateProgress();
+  }
+
+  @override
+  void didUpdateWidget(ActivityProgressIndicator oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.date != widget.date) {
+      _updateProgress(); // Call the progress update when the widget date changes
+    }
+  }
+
+  Future<void> _updateProgress() async{
+    List<Task> tasksonTheDay = await DatabaseHelper.instance.getTasks(widget.date);
+    totaltasks = tasksonTheDay.length;
+    completedtasks = tasksonTheDay.where((task) => task.isCompleted).length;
+    progressValue = totaltasks > 0 ? completedtasks / totaltasks : 0;
+
+  }
+  @override
   Widget build(BuildContext context) {
-    // Customizable value for progress
-    double progressValue = 0.67;
+
     int progressPercent = (progressValue * 100).toInt(); // Convert to percentage for display
 
     return Container(
@@ -143,7 +222,7 @@ class ActivityProgressIndicator extends StatelessWidget {
                 ),
               ),
               Text(
-                '4 of 6 completed',
+                '${completedtasks} of ${totaltasks} completed',
                 style: TextStyle(
                   color: Colors.grey[500],
                   fontSize: 14,
@@ -156,5 +235,7 @@ class ActivityProgressIndicator extends StatelessWidget {
     ),
     );
   }
+
+
 }
 

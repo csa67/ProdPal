@@ -3,18 +3,14 @@ import 'package:hci/CardView.dart';
 import 'package:hci/NewTaskPage.dart';
 import 'package:hci/StatsPage.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:sqflite_common_ffi/sqflite_ffi.dart';
-import 'package:sqflite_common_ffi_web/sqflite_ffi_web.dart';
-import 'package:sqflite/sqflite.dart';
-import 'package:flutter/foundation.dart' show kIsWeb;
 
 void main() {
- if (kIsWeb) {
-    // Use the ffi web factory in web apps.
-    databaseFactory = databaseFactoryFfiWeb;
-  } else{
-   databaseFactory = databaseFactoryFfi;
- }
+ // if (kIsWeb) {
+ //    // Use the ffi web factory in web apps.
+ //    databaseFactory = databaseFactoryFfiWeb;
+ //  } else{
+ //   databaseFactory = databaseFactoryFfi;
+ // }
   runApp(const MyApp());
 }
 

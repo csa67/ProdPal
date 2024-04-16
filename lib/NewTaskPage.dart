@@ -272,7 +272,6 @@ Widget _buildDatePicker() {
           onPressed: () async {
             try {
               final newTask = createTaskFromInput();
-              // Attempt to insert the new task into the database.
               await DatabaseHelper.instance.insertTask(newTask);
               Navigator.pushAndRemoveUntil(
                 context,
@@ -281,9 +280,8 @@ Widget _buildDatePicker() {
               );
 
             } catch (e) {
-              // If an error occurs,show an error message.
               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Failed to add task')),
+                SnackBar(content: Text('Failed to add task: ${e.toString()}')),
               );
             }
           },
