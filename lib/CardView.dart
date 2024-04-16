@@ -104,6 +104,7 @@ class _TasksListState extends State<TasksList> {
                 if (picked != null && picked != _selectedDate) {
                   setState(() {
                     _selectedDate = picked;
+                    _weekDays = _generateWeekDays(picked);
                     futureTasks =
                         DatabaseHelper.instance.getTasks(_selectedDate);
                   });
