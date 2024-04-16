@@ -63,7 +63,7 @@ class _TasksListState extends State<TasksList> {
             foregroundColor: Colors.white,
             backgroundColor:
                 _currentFilter == filter ? Colors.pinkAccent : Colors.grey[300],
-            padding: EdgeInsets.all(6),
+            padding: const EdgeInsets.all(6),
           ),
           child: Text(
             filter.label,
@@ -92,12 +92,6 @@ class _TasksListState extends State<TasksList> {
         appBar: AppBar(
           title: Text((DateFormat('MMMM yyyy')).format(_selectedDate)),
           actions: [
-            IconButton(
-              icon: const Icon(Icons.pending_actions_sharp),
-              onPressed: () {
-                //
-              },
-            ),
             IconButton(
               icon: const Icon(Icons.calendar_today),
               onPressed: () async {
@@ -181,6 +175,11 @@ class _TasksListState extends State<TasksList> {
                                 items.removeAt(index);
                               });
                             },
+                            onTaskUndo: (){
+                              setState(() {
+                                items.removeAt(index);
+                              });
+                            },
                             startTime: items[index].startTime,
                             endTime: items[index].endTime,
                           );
@@ -206,6 +205,7 @@ class TaskCard extends StatelessWidget {
   final TimeOfDay endTime;
   final VoidCallback onTaskCompletion;
   final VoidCallback onTaskDismissal;
+  final VoidCallback onTaskUndo;
 
   const TaskCard({
     super.key,
@@ -214,6 +214,7 @@ class TaskCard extends StatelessWidget {
     required this.endTime,
     required this.onTaskCompletion,
     required this.onTaskDismissal,
+    required this.onTaskUndo,
   });
 
   String _formatTimeOfDay(TimeOfDay tod) {
@@ -229,9 +230,21 @@ class TaskCard extends StatelessWidget {
       key: Key(item.id),
       direction: DismissDirection.horizontal,
       onDismissed: (direction) async {
-        if (direction == DismissDirection.startToEnd) {
-          onTaskDismissal();
-        } else if (direction == DismissDirection.endToStart) {
+        if (direction == DismissDirection.endToStart && item.isCompleted) {
+          try {
+            await DatabaseHelper.instance.updateTaskCompletion(item.id, false);
+            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+              content: Text('Task moved to in progress!'),
+              duration: Duration(seconds: 2),
+            ));
+          } catch (e) {
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              content: Text('Failed to update task! Error: $e'),
+              duration: const Duration(seconds: 2),
+            ));
+          }
+          onTaskUndo();
+        } else if (direction == DismissDirection.endToStart && !item.isCompleted) {
           try {
             await DatabaseHelper.instance.updateTaskCompletion(item.id, true);
             ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
@@ -245,6 +258,8 @@ class TaskCard extends StatelessWidget {
             ));
           }
           onTaskCompletion();
+        } else {
+          onTaskDismissal();
         }
       },
       background: Container(
@@ -254,10 +269,10 @@ class TaskCard extends StatelessWidget {
         child: const Icon(Icons.delete_outline),
       ),
       secondaryBackground: Container(
-        color: Colors.green,
+        color: item.isCompleted ? Colors.blue : Colors.green,
         alignment: Alignment.centerRight,
         padding: const EdgeInsets.only(right: 20.0),
-        child: const Icon(Icons.check),
+        child: Icon(item.isCompleted ? Icons.undo : Icons.check),
       ),
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 4.0),

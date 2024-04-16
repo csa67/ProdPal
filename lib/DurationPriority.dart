@@ -48,7 +48,7 @@ class _TimeSelectionTileState extends State<TimeSelectionTile> {
               ListTile(
                 title: Text(_fromTime != null
                     ? 'From: ${_fromTime!.format(context)}'
-                    : 'Choose From Time'),
+                    : 'Start Time'),
                 trailing: IconButton(
                   icon: const Icon(Icons.edit),
                   onPressed: () => _selectFromTime(context),
@@ -58,7 +58,7 @@ class _TimeSelectionTileState extends State<TimeSelectionTile> {
                 ListTile(
                   title: Text(_tillTime != null
                       ? 'Till: ${_tillTime!.format(context)}'
-                      : 'Choose Till Time'),
+                      : 'End Time'),
                   trailing: IconButton(
                     icon: const Icon(Icons.edit),
                     onPressed: () => _selectTillTime(context),
