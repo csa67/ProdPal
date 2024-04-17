@@ -84,40 +84,49 @@ class DatabaseHelper {
   }
 
 
-  Future<void> updateTaskCompletion(String taskId, bool isCompleted) async {
+  Future<void> deleteTask(String taskId) async {
     final db = await database;
-    try {
-      int count = await db.update(
-        'taskslist',
-        {'isCompleted': isCompleted ? 1 : 0},
-        where: 'id = ?',
-        whereArgs: [taskId],
-      );
-      if (count == 0) {
-        print("No task updated: Check if task ID $taskId exists.");
-      } else {
-        print("$count task(s) marked as completed.");
-      }
-    } catch (e) {
-      print("Error updating task: $e");
-    }
+    await db.delete(
+      'taskslist',
+      where: 'id = ?',
+      whereArgs: [taskId],
+    );
   }
+
+Future<void> updateTaskCompletion(String taskId, bool isCompleted) async {
+  final db = await database;
+  try {
+    int count = await db.update(
+      'taskslist',
+      {'isCompleted': isCompleted ? 1 : 0},
+      where: 'id = ?',
+      whereArgs: [taskId],
+    );
+    if (count == 0) {
+      print("No task updated: Check if task ID $taskId exists.");
+    } else {
+      print("$count task(s) marked as completed.");
+    }
+  } catch (e) {
+    print("Error updating task: $e");
+  }
+}
 
 
 }
-  // Future<List<Task>> getCompletedTasks(bool isDone) async{
-  //   final db = await database;
-  //
-  //   final List<Map<>
-  // }
+// Future<List<Task>> getCompletedTasks(bool isDone) async{
+//   final db = await database;
+//
+//   final List<Map<>
+// }
 
 
-  // Future<List<Task>> getTasks() async {
-  //   final db = await database;
-  //   final List<Map<String, dynamic>> taskMaps = await db.query('taskslist');
-  //
-  //   return List.generate(taskMaps.length, (i) {
-  //     return Task.fromMap(taskMaps[i]);
-  //   });
-  // }
+// Future<List<Task>> getTasks() async {
+//   final db = await database;
+//   final List<Map<String, dynamic>> taskMaps = await db.query('taskslist');
+//
+//   return List.generate(taskMaps.length, (i) {
+//     return Task.fromMap(taskMaps[i]);
+//   });
+// }
 

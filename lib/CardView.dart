@@ -43,7 +43,7 @@ class _TasksListState extends State<TasksList> {
   void didUpdateWidget(TasksList oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (widget.refreshTrigger != oldWidget.refreshTrigger) {
-      futureTasks = DatabaseHelper.instance.getTasks(_selectedDate); // Reload tasks when trigger changes
+      futureTasks = _getFilteredTasks(_selectedDate, TaskFilter.inProgress);// Reload tasks when trigger changes
     }
   }
 
@@ -270,6 +270,32 @@ class TaskCard extends StatelessWidget {
           }
           onTaskCompletion();
         } else {
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: const Text("Confirm Delete"),
+                content: const Text("Are you sure you want to delete this task?"),
+                actions: <Widget>[
+                  TextButton(
+                    onPressed: () => Navigator.of(context).pop(),
+                    child: const Text("Cancel"),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      DatabaseHelper.instance.deleteTask(item.id);
+                      Navigator.of(context).pop();
+                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                        content: Text('Deleted Task successfully!'),
+                        duration: Duration(seconds: 2),
+                      ));
+                    },
+                    child: const Text("Delete"),
+                  ),
+                ],
+              );
+            },
+          );
           onTaskDismissal();
         }
       },
