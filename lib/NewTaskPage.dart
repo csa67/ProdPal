@@ -30,10 +30,9 @@ class Task extends StatefulWidget{
 
 class _TaskState extends State<Task>{
 
-  DateTime? selectedDate;
+  DateTime? selectedDate = DateTime.now();
   DateTime? currentDate;
   bool isDateTileExpanded = false;
-  int _selectedValue = 1;
   late TimeOfDay _startTime = TimeOfDay.now();
   late TimeOfDay _endTime = TimeOfDay(hour: TimeOfDay.now().hour + 1, minute: TimeOfDay.now().minute);
   taskmodel.TaskPriority _selectedPriority = taskmodel.TaskPriority.low;
@@ -123,7 +122,6 @@ Widget _buildDatePicker() {
     _endTime = TimeOfDay(hour: TimeOfDay.now().hour + 1, minute: TimeOfDay.now().minute);
     _selectedPriority = taskmodel.TaskPriority.low;
     isDateTileExpanded = false;
-    _selectedValue = 1;
     setState(() {});
   }
 
@@ -170,6 +168,7 @@ Widget _buildDatePicker() {
           style: const TextStyle(fontSize: 24),
           minLines: 2,
           maxLines: 3,
+          textCapitalization: TextCapitalization.words,
         ),
         const SizedBox(height: 15),
         TextField(
@@ -183,6 +182,7 @@ Widget _buildDatePicker() {
           style: const TextStyle(fontSize: 16),
           minLines: 4,
           maxLines: 10,
+          textCapitalization: TextCapitalization.sentences,
         ),
         const SizedBox(height: 20),
         ListTile(
@@ -208,86 +208,86 @@ Widget _buildDatePicker() {
             });
           }
         ),
-        ExpansionTile(
-            title: const Text('Repeat'),
-            leading: const Icon(Icons.repeat),
-            children: <Widget>[
-              RadioListTile(
-                  title: const Text('Never'),
-                  value: 1,
-                  groupValue: _selectedValue,
-                  onChanged: (value) {
-                    setState(() {
-                      _selectedValue = value!;
-                    });
-                  }
-              ),
-              RadioListTile(
-                  title: const Text('Daily'),
-                  value: 2,
-                  groupValue: _selectedValue,
-                  onChanged: (value) {
-                    setState(() {
-                      _selectedValue = value!;
-                    });
-                  }
-              ),
-              RadioListTile(
-                  title: const Text('Weekdays'),
-                  value: 3,
-                  groupValue: _selectedValue,
-                  onChanged: (value) {
-                    setState(() {
-                      _selectedValue = value!;
-                    });
-                  }
-              ),
-              RadioListTile(
-                  title: const Text('Weekend'),
-                  value: 4,
-                  groupValue: _selectedValue,
-                  onChanged: (value) {
-                    setState(() {
-                      _selectedValue = value!;
-                    });
-                  }
-              ),
-              RadioListTile(
-                  title: const Text('Weekly'),
-                  value: 5,
-                  groupValue: _selectedValue,
-                  onChanged: (value) {
-                    setState(() {
-                      _selectedValue = value!;
-                    });
-                  }
-              ),
-              RadioListTile(
-                  title: const Text('Monthly'),
-                  value: 6,
-                  groupValue: _selectedValue,
-                  onChanged: (value) {
-                    setState(() {
-                      _selectedValue = value!;
-                    });
-                  }
-              ),
-              RadioListTile(
-                  title: const Text('Custom'),
-                  value: 7,
-                  groupValue: _selectedValue,
-                  onChanged: (value) {
-                    setState(() {
-                      _selectedValue = value!;
-                    });
-                  }
-              ),
-              ElevatedButton(
-                onPressed: _onApplyButtonPressed,
-                child: const Text('Confirm'),
-              ),
-            ]
-        ),
+        // ExpansionTile(
+        //     title: const Text('Repeat'),
+        //     leading: const Icon(Icons.repeat),
+        //     children: <Widget>[
+        //       RadioListTile(
+        //           title: const Text('Never'),
+        //           value: 1,
+        //           groupValue: _selectedValue,
+        //           onChanged: (value) {
+        //             setState(() {
+        //               _selectedValue = value!;
+        //             });
+        //           }
+        //       ),
+        //       RadioListTile(
+        //           title: const Text('Daily'),
+        //           value: 2,
+        //           groupValue: _selectedValue,
+        //           onChanged: (value) {
+        //             setState(() {
+        //               _selectedValue = value!;
+        //             });
+        //           }
+        //       ),
+        //       RadioListTile(
+        //           title: const Text('Weekdays'),
+        //           value: 3,
+        //           groupValue: _selectedValue,
+        //           onChanged: (value) {
+        //             setState(() {
+        //               _selectedValue = value!;
+        //             });
+        //           }
+        //       ),
+        //       RadioListTile(
+        //           title: const Text('Weekend'),
+        //           value: 4,
+        //           groupValue: _selectedValue,
+        //           onChanged: (value) {
+        //             setState(() {
+        //               _selectedValue = value!;
+        //             });
+        //           }
+        //       ),
+        //       RadioListTile(
+        //           title: const Text('Weekly'),
+        //           value: 5,
+        //           groupValue: _selectedValue,
+        //           onChanged: (value) {
+        //             setState(() {
+        //               _selectedValue = value!;
+        //             });
+        //           }
+        //       ),
+        //       RadioListTile(
+        //           title: const Text('Monthly'),
+        //           value: 6,
+        //           groupValue: _selectedValue,
+        //           onChanged: (value) {
+        //             setState(() {
+        //               _selectedValue = value!;
+        //             });
+        //           }
+        //       ),
+        //       RadioListTile(
+        //           title: const Text('Custom'),
+        //           value: 7,
+        //           groupValue: _selectedValue,
+        //           onChanged: (value) {
+        //             setState(() {
+        //               _selectedValue = value!;
+        //             });
+        //           }
+        //       ),
+        //       ElevatedButton(
+        //         onPressed: _onApplyButtonPressed,
+        //         child: const Text('Confirm'),
+        //       ),
+        //     ]
+        // ),
         ExpansionTile(
           title: const Text('Priority'),
           leading: const Icon(Icons.priority_high),
@@ -308,7 +308,7 @@ Widget _buildDatePicker() {
         width: MediaQuery.of(context).size.width,
         child: ElevatedButton(
           onPressed: () async {
-           saveTaskAndNavigateBack(context);
+            _addTaskIfNoOverlap();
           },
           style: ElevatedButton.styleFrom(
             shape: RoundedRectangleBorder(
@@ -320,5 +320,68 @@ Widget _buildDatePicker() {
         ),
       ),
     );
+  }
+
+  DateTime _convertTimeOfDayToDateTime(DateTime date, TimeOfDay time) {
+    return DateTime(date.year, date.month, date.day, time.hour, time.minute);
+  }
+
+  Future<taskmodel.Task?> findConflictingTask(TimeOfDay newStartTime, TimeOfDay newEndTime, DateTime newTaskDate) async {
+    List<taskmodel.Task> tasksForTheDay = await DatabaseHelper.instance.getTasks(newTaskDate);
+
+    for (var task in tasksForTheDay) {
+      final newStart = _convertTimeOfDayToDateTime(newTaskDate, newStartTime);
+      final newEnd = _convertTimeOfDayToDateTime(newTaskDate, newEndTime);
+      final existingStart = _convertTimeOfDayToDateTime(task.date, task.startTime);
+      final existingEnd = _convertTimeOfDayToDateTime(task.date, task.endTime);
+
+      if ((newStart.isAfter(existingStart) && newStart.isBefore(existingEnd)) ||
+          (newEnd.isAfter(existingStart) && newEnd.isBefore(existingEnd)) ||
+          (newStart.isAtSameMomentAs(existingStart) || newEnd.isAtSameMomentAs(existingEnd))) {
+        return task; // Return the conflicting task
+      }
+    }
+
+    return null; // No conflict found
+  }
+
+  Future<void> _addTaskIfNoOverlap() async {
+    taskmodel.Task? conflictingTask = await findConflictingTask(_startTime, _endTime, selectedDate!);
+
+    if (conflictingTask != null) {
+      // There is a conflicting task, so let's ask the user to confirm
+      bool? userChoice = await showDialog<bool>(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Alert'),
+            content: Text('This task conflicts with "${conflictingTask.title}". Are you sure you want to add it?'),
+            actions: <Widget>[
+              TextButton(
+                child: const Text('Cancel'),
+                onPressed: () => Navigator.of(context).pop(false),
+              ),
+              TextButton(
+                child: const Text('Continue'),
+                onPressed: () => Navigator.of(context).pop(true),
+              ),
+            ],
+          );
+        },
+      );
+
+      if (userChoice ?? false) {
+        _actuallyAddTask(); // User confirmed they want to add the task
+      }
+    } else {
+      _actuallyAddTask(); // No conflict, proceed to add the task
+    }
+  }
+
+  void _actuallyAddTask() async {
+    saveTaskAndNavigateBack(context);
+    if (widget.onTaskCreated != null) {
+      widget.onTaskCreated!();
+    }
   }
 }
