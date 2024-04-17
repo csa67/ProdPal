@@ -5,12 +5,6 @@ import 'package:hci/StatsPage.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 void main() {
- // if (kIsWeb) {
- //    // Use the ffi web factory in web apps.
- //    databaseFactory = databaseFactoryFfiWeb;
- //  } else{
- //   databaseFactory = databaseFactoryFfi;
- // }
   runApp(const MyApp());
 }
 
@@ -42,6 +36,22 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int _selectedIndex = 0;
+  int _refreshCounter = 0;
+
+  Widget _buildPage(int index) {
+    switch (index) {
+      case 0:
+        return CardView(refreshTrigger: _refreshCounter);
+      case 1:
+        return NewTaskPage(onTaskCreated: switchToTasksTab);
+      case 2:
+        return const StatsPage();
+    // Return the appropriate page for each tab
+      default:
+        return Container();
+    }
+  }
+
   final List<GlobalKey<NavigatorState>> _navigatorKeys = [
     GlobalKey<NavigatorState>(),
     GlobalKey<NavigatorState>(),
@@ -59,7 +69,8 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void switchToTasksTab() {
-    _selectTab(0); // Switch to the first tab (index 0)
+    _selectTab(0);
+    _refreshCounter++;
   }
 
   @override
@@ -67,6 +78,7 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
       body: IndexedStack(
         index: _selectedIndex,
+        key: ValueKey(_refreshCounter),
         children: [
           _buildOffstageNavigator(0),
           _buildOffstageNavigator(1),
@@ -99,19 +111,5 @@ class _MyHomePageState extends State<MyHomePage> {
         },
       ),
     );
-  }
-
-  Widget _buildPage(int index) {
-    switch (index) {
-      case 0:
-        return const CardView();
-      case 1:
-        return NewTaskPage(onTaskCreated: switchToTasksTab);
-      case 2:
-        return const StatsPage();
-    // Return the appropriate page for each tab
-      default:
-        return Container();
-    }
   }
 }

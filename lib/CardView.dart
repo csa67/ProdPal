@@ -6,18 +6,20 @@ import 'package:hci/TaskDetails.dart';
 import 'package:intl/intl.dart';
 
 class CardView extends StatelessWidget {
-  const CardView({super.key});
+  final int refreshTrigger;
+  const CardView({super.key, required this.refreshTrigger});
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      body: TasksList(),
+    return Scaffold(
+      body: TasksList(refreshTrigger: refreshTrigger),
     );
   }
 }
 
 class TasksList extends StatefulWidget {
-  const TasksList({super.key});
+  final int refreshTrigger;
+  const TasksList({super.key, required this.refreshTrigger});
 
   @override
   State<TasksList> createState() => _TasksListState();
@@ -35,6 +37,14 @@ class _TasksListState extends State<TasksList> {
     _selectedDate = DateTime.now();
     _weekDays = _generateWeekDays(_selectedDate);
     futureTasks = DatabaseHelper.instance.getTasks(_selectedDate);
+  }
+
+  @override
+  void didUpdateWidget(TasksList oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.refreshTrigger != oldWidget.refreshTrigger) {
+      futureTasks = DatabaseHelper.instance.getTasks(_selectedDate); // Reload tasks when trigger changes
+    }
   }
 
   List<DateTime> _generateWeekDays(DateTime date) {
