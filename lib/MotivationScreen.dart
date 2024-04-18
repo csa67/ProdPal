@@ -2,12 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:hci/model/Quote.dart';
 
 class QuoteScreen extends StatefulWidget {
+  const QuoteScreen({super.key});
+
   @override
-  _QuoteScreenState createState() => _QuoteScreenState();
+  QuoteScreenState createState() => QuoteScreenState();
 }
 
-class _QuoteScreenState extends State<QuoteScreen> {
-  late Quote _currentQuote;
+class QuoteScreenState extends State<QuoteScreen> {
+  Quote? _currentQuote;
   final _quoteService = DummyQuoteService();
 
   @override
@@ -35,7 +37,7 @@ class _QuoteScreenState extends State<QuoteScreen> {
           Padding(
             padding: const EdgeInsets.all(20.0),
             child: Text(
-              _currentQuote.content,
+              _currentQuote!.content,
               style: const TextStyle(fontSize: 24.0, fontStyle: FontStyle.italic),
               textAlign: TextAlign.center,
             ),
@@ -44,10 +46,10 @@ class _QuoteScreenState extends State<QuoteScreen> {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               IconButton(
-                icon: Icon(_currentQuote.isFavorite ? Icons.star : Icons.star_border),
+                icon: Icon(_currentQuote!.isFavorite ? Icons.star : Icons.star_border),
                 onPressed: () {
                   setState(() {
-                    _currentQuote.toggleFavorite();
+                    _currentQuote!.toggleFavorite();
                   });
                 },
               ),
