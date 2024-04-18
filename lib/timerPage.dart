@@ -3,22 +3,49 @@ import 'package:flutter/material.dart';
 import 'package:hci/boxBreathingAnimation.dart';
 
 class TimerPage extends StatelessWidget {
-  const TimerPage({super.key});
+  final Duration time;
+
+  const TimerPage({super.key, required this.time});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
+        appBar: AppBar(
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back),
+            onPressed: () => Navigator.of(context).pop(),
+          ),
+        ),
         body: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Expanded(
+             Expanded(
               child: Center(
                 child: TimerCircle(
-                    duration: 30), // Duration is set here, change as needed
+                    duration: time.inSeconds), // Duration is set here, change as needed
               ),
             ),
           ],
+        ),
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+        floatingActionButton: SizedBox(
+          width: MediaQuery.of(context).size.width,
+          child: ElevatedButton(
+            onPressed: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(builder: (context) => const BoxBreathing()),
+              );
+            },
+            style: ElevatedButton.styleFrom(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(
+                    40), // Ensures the button is square-edged
+              ),
+              minimumSize: const Size.fromHeight(50), // Set the button's height
+            ),
+            child: const Text('I need a break!'),
+          ),
         ),
       ),
     );
@@ -96,8 +123,9 @@ class _TimerCircleState extends State<TimerCircle> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Column(
+    return Center(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -118,7 +146,7 @@ class _TimerCircleState extends State<TimerCircle> {
                 formatTime(_remainingSeconds),
                 style: const TextStyle(
                   fontWeight: FontWeight.bold,
-                  fontSize: 50,
+                  fontSize: 32,
                   color: Colors.pinkAccent,
                 ),
               ),
@@ -159,31 +187,16 @@ class _TimerCircleState extends State<TimerCircle> {
               )),
         ],
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      floatingActionButton: SizedBox(
-        width: MediaQuery.of(context).size.width,
-        child: ElevatedButton(
-          onPressed: () {
-            Navigator.of(context).push(
-              MaterialPageRoute(builder: (context) => const BoxBreathing()),
-            );
-          },
-          style: ElevatedButton.styleFrom(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(
-                  40), // Ensures the button is square-edged
-            ),
-            minimumSize: const Size.fromHeight(50), // Set the button's height
-          ),
-          child: const Text('I need a break!'),
-        ),
-      ),
     );
   }
 
   String formatTime(int totalSeconds) {
-    int minutes = totalSeconds ~/ 60;
+    int hours = totalSeconds ~/ 3600;
+    int minutes = (totalSeconds % 3600) ~/ 60;
     int seconds = totalSeconds % 60;
-    return '${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}';
+
+    return '${hours.toString().padLeft(2, '0')}:${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}';
   }
+
+
 }

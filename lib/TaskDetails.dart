@@ -3,6 +3,8 @@ import 'package:hci/NewTaskPage.dart' as newTask;
 import 'package:hci/model/Task.dart';
 import 'package:hci/timerPage.dart';
 import 'package:hci/util.dart';
+import 'package:intl/intl.dart';
+
 
 class TaskDetails extends StatelessWidget {
   final Task task;
@@ -92,8 +94,15 @@ class WorkoutScreen extends StatelessWidget {
         ),
         onPressed: () {
           // Handle the button tap
+          Duration duration = calculateDuration(
+            DateFormat('yyyy-MM-dd').format(task.date),
+            task.startTime,
+            task.endTime,
+          );
+
+          // Push the TimerPage onto the navigation stack and pass the duration
           Navigator.of(context).push(
-            MaterialPageRoute(builder: (context) => const TimerPage()),
+            MaterialPageRoute(builder: (context) => TimerPage(time: duration)),
           );
         },
         child: const Text(

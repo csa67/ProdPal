@@ -22,3 +22,12 @@ bool isToday(DateTime date) {
   DateTime now = DateTime.now();
   return date.year == now.year && date.month == now.month && date.day == now.day;
 }
+
+Duration calculateDuration(String date, TimeOfDay startTime, TimeOfDay endTime) {
+  // Convert TimeOfDay to a DateTime on the provided date
+  DateTime startDateTime = DateTime.parse('$date ${formatTimeOfDay(startTime)}:00');
+  DateTime endDateTime = DateTime.parse('$date ${formatTimeOfDay(endTime)}:00');
+
+  // Calculate the duration
+  return endDateTime.difference(startDateTime);
+}
