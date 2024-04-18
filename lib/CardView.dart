@@ -269,7 +269,7 @@ class TaskCard extends StatelessWidget {
             ));
           }
           onTaskCompletion();
-        } else {
+        } else if(direction == DismissDirection.startToEnd) {
           showDialog(
             context: context,
             builder: (BuildContext context) {
@@ -297,6 +297,8 @@ class TaskCard extends StatelessWidget {
             },
           );
           onTaskDismissal();
+        } else{
+          // No op
         }
       },
       background: Container(

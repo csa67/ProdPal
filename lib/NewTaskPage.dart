@@ -117,7 +117,7 @@ Widget _buildDatePicker() {
   void clearForm() {
     _titleController.clear();
     _descriptionController.clear();
-    selectedDate = null;
+    selectedDate = DateTime.now();
     _startTime = TimeOfDay.now();
     _endTime = TimeOfDay(hour: TimeOfDay.now().hour + 1, minute: TimeOfDay.now().minute);
     _selectedPriority = taskmodel.TaskPriority.low;
