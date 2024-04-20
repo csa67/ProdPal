@@ -1,21 +1,60 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 class AchievementsScreen extends StatelessWidget {
   final List<Achievement> achievements = [
     Achievement(
       title: 'First Step',
-      icon: Icons.baby_changing_station,
+      icon: 'assets/mental-health.png',
       description: 'Complete your first task',
       isUnlocked: true,
     ),
     Achievement(
       title: 'Hot Auction',
-      icon: Icons.whatshot,
+      icon: 'assets/mood.png',
       description: 'Participate in your first auction',
       isUnlocked: false,
     ),
-    // Add more achievements as needed
+    Achievement(
+      title: 'Hot Auction',
+      icon: 'assets/trophy.png',
+      description: 'Participate in your first auction',
+      isUnlocked: false,
+    ),
+    Achievement(
+      title: 'Hot Auction',
+      icon: 'assets/sunflower.png',
+      description: 'Participate in your first auction',
+      isUnlocked: false,
+    ),
+    Achievement(
+      title: 'Hot Auction',
+      icon: 'assets/trophy.png',
+      description: 'Participate in your first auction',
+      isUnlocked: false,
+    ),
+    Achievement(
+      title: 'Hot Auction',
+      icon: 'assets/sunflower.png',
+      description: 'Participate in your first auction',
+      isUnlocked: false,
+    ),
+    Achievement(
+      title: 'Hot Auction',
+      icon: 'assets/trophy.png',
+      description: 'Participate in your first auction',
+      isUnlocked: false,
+    ),
+    Achievement(
+      title: 'Hot Auction',
+      icon: 'assets/trophy.png',
+      description: 'Participate in your first auction',
+      isUnlocked: false,
+    ),
+    //Add more achievements as needed
   ];
+
+  AchievementsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +68,7 @@ class AchievementsScreen extends StatelessWidget {
           crossAxisCount: 2,
           crossAxisSpacing: 16.0,
           mainAxisSpacing: 16.0,
-          childAspectRatio: (3 / 2),
+          childAspectRatio: (4 / 4),
         ),
         itemCount: achievements.length,
         itemBuilder: (context, index) {
@@ -42,7 +81,7 @@ class AchievementsScreen extends StatelessWidget {
 
 class Achievement {
   final String title;
-  final IconData icon;
+  final String icon;
   final String description;
   final bool isUnlocked;
 
@@ -57,7 +96,7 @@ class Achievement {
 class AchievementCard extends StatelessWidget {
   final Achievement achievement;
 
-  AchievementCard({required this.achievement});
+  AchievementCard({super.key, required this.achievement});
 
   @override
   Widget build(BuildContext context) {
@@ -70,16 +109,16 @@ class AchievementCard extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
-            Icon(
+            Image.asset(
               achievement.icon,
-              size: 40.0, // Adjust the size as needed
+              width: 100.0, // Adjust the size as needed
               color: achievement.isUnlocked ? null : Colors.grey,
             ),
             const SizedBox(height: 8),
             Text(
               achievement.title,
               style: TextStyle(
-                fontSize: 14, // Adjust the font size as needed
+                fontSize: 18, // Adjust the font size as needed
                 fontWeight: FontWeight.bold,
                 color: achievement.isUnlocked ? Colors.black : Colors.grey,
               ),

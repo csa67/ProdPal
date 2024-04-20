@@ -75,6 +75,10 @@ flutter:
     - assets/okay_color.png
     - assets/ex_grey.png
     - assets/ex_color.png
+    - assets/mental-health.png
+    - assets/trophy.png
+    - assets/mood.png
+    - assets/sunflower.png
       # Add the rest of your emoji assets here
 
 

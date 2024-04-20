@@ -1,4 +1,3 @@
-import 'dart:ui';
 import 'package:hci/AchievementsScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:hci/MoodTrackerWidget.dart';
@@ -35,10 +34,10 @@ class _StatsPageState extends State<StatsPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            const SizedBox(height: 20),
+            const SizedBox(height: 50),
             // Provide some spacing from the top of the screen.
             const Text(
-              'Hello,\nSophie!',
+              'Hello!',
               style: TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
@@ -73,13 +72,12 @@ class _StatsPageState extends State<StatsPage> {
                             18.0), // Rounded corners - adjust the radius to match your MoodTrackerWidget
                       ),
                       padding: const EdgeInsets.all(12),
-                      elevation: 5,
                       minimumSize: const Size(180,
                           150) // Elevation - adjust to your preference or match your MoodTrackerWidget
                       ),
                   child: const Text(
                     'Motivate Me!',
-                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
                 ),
                 ElevatedButton(
@@ -96,12 +94,11 @@ class _StatsPageState extends State<StatsPage> {
                             18.0), // Rounded corners - adjust the radius to match your MoodTrackerWidget
                       ),
                       padding: const EdgeInsets.all(12),
-                      elevation: 5,
                       minimumSize: const Size(180, 150)
                       ),
                   child: const Text(
                     'Achievements',
-                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
                 ),
               ],
@@ -219,10 +216,10 @@ class _ActivityProgressIndicatorState extends State<ActivityProgressIndicator> {
   Future<void> _updateProgress() async {
     List<Task> tasksonTheDay =
         await DatabaseHelper.instance.getTasks(widget.date);
-    int Total = tasksonTheDay.length;
+    int total = tasksonTheDay.length;
     int completedTasks = tasksonTheDay.where((task) => task.isCompleted).length;
     setState(() {
-      totaltasks = Total;
+      totaltasks = total;
       completedtasks = completedTasks;
       progressValue = totaltasks > 0 ? completedtasks / totaltasks : 0;
     });
@@ -262,7 +259,7 @@ class _ActivityProgressIndicatorState extends State<ActivityProgressIndicator> {
                 width: 100,
                 child: CircularProgressIndicator(
                   value: progressValue, // Current progress
-                  backgroundColor: Colors.grey[800],
+                  backgroundColor: Colors.pink[100],
                   valueColor: const AlwaysStoppedAnimation<Color>(Colors.pink),
                   strokeWidth: 6, // Thinner stroke width
                 ),
@@ -271,8 +268,8 @@ class _ActivityProgressIndicatorState extends State<ActivityProgressIndicator> {
                 '$progressPercent%', // Display the percentage
                 style: const TextStyle(
                   fontWeight: FontWeight.bold,
-                  fontSize: 18, // Smaller font size for the percentage text
-                  color: Colors.pink,
+                  fontSize: 22, // Smaller font size for the percentage text
+                  color: Colors.black,
                 ),
               ),
             ],
@@ -290,8 +287,9 @@ class _ActivityProgressIndicatorState extends State<ActivityProgressIndicator> {
                 const Text(
                   'My Activities',
                   style: TextStyle(
-                    color: Colors.pink,
-                    fontSize: 18,
+                    color: Colors.black,
+                    fontSize: 22,
+                    fontWeight: FontWeight.w900
                   ),
                 ),
                 Text(

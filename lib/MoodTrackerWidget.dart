@@ -71,7 +71,7 @@ class MoodTrackerWidgetState extends State<MoodTrackerWidget> {
               );
             }),
           ),
-      ConfettiMessageDisplay(),
+      const ConfettiMessageDisplay(),
         ],
       ),
     );
