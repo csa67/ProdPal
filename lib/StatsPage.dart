@@ -54,7 +54,7 @@ class _StatsPageState extends State<StatsPage> {
             ActivityProgressIndicator(
                 key: _activityProgressIndicatorKey, date: selectedDate),
             const SizedBox(height: 10),
-            MoodTrackerWidget(),
+            const MoodTrackerWidget(),
             const SizedBox(height: 10),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,

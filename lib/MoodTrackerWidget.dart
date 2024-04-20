@@ -1,13 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:hci/ConfettiDisplay.dart';
+import 'package:hci/ConfettiManager.dart';
 import 'package:hci/model/Mood.dart';
+import 'package:provider/provider.dart';
 
 class MoodTrackerWidget extends StatefulWidget {
+  const MoodTrackerWidget({super.key});
+
   @override
-  _MoodTrackerWidgetState createState() => _MoodTrackerWidgetState();
+  MoodTrackerWidgetState createState() => MoodTrackerWidgetState();
 }
 
-class _MoodTrackerWidgetState extends State<MoodTrackerWidget> {
+class MoodTrackerWidgetState extends State<MoodTrackerWidget> {
   int? _selectedMoodIndex; // Index of the selected mood
+  bool _isFirstTap = true;
 
   @override
   Widget build(BuildContext context) {
@@ -43,6 +49,12 @@ class _MoodTrackerWidgetState extends State<MoodTrackerWidget> {
                 onTap: () {
                   setState(() {
                     _selectedMoodIndex = index;
+                    if(_isFirstTap){
+                      Provider.of<ConfettiManager>(context, listen: false).playConfetti(
+                        achievementMessage: "Wohoo! You unlocked a new achievement!",
+                      );
+                      _isFirstTap = false;
+                    }
                   });
                 },
                 child: Column(
@@ -59,6 +71,7 @@ class _MoodTrackerWidgetState extends State<MoodTrackerWidget> {
               );
             }),
           ),
+      ConfettiMessageDisplay(),
         ],
       ),
     );

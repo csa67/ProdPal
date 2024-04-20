@@ -1,11 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:hci/CardView.dart';
+import 'package:hci/ConfettiManager.dart';
 import 'package:hci/NewTaskPage.dart';
 import 'package:hci/StatsPage.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(
+    ChangeNotifierProvider(
+    create: (_) => ConfettiManager(),
+    child: const MyApp(),
+  ),);
 }
 
 class MyApp extends StatelessWidget {
