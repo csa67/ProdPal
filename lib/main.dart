@@ -4,6 +4,7 @@ import 'package:hci/ConfettiManager.dart';
 import 'package:hci/NewTaskPage.dart';
 import 'package:hci/StatsPage.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:hci/util.dart';
 import 'package:provider/provider.dart';
 
 void main() {
@@ -23,7 +24,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.pinkAccent),
+        colorScheme: ColorScheme.fromSeed(seedColor: steelBlue, primary: steelBlue, onPrimary: Colors.white, secondary: lightSkyBlue, onSecondary: Colors.white),
         useMaterial3: true,
         textTheme: GoogleFonts.nunitoSansTextTheme(),
       ),
@@ -93,6 +94,9 @@ class _MyHomePageState extends State<MyHomePage> {
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
+        backgroundColor: steelBlue,
+        selectedItemColor: paleGreen,
+        unselectedItemColor: lightGray,
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
           BottomNavigationBarItem(icon: Icon(Icons.add), label: 'Add Task'),

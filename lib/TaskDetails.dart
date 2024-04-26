@@ -15,7 +15,14 @@ class TaskDetails extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Task Details'),
+        backgroundColor: steelBlue,
+        title: const Text('Task Details',
+        style: TextStyle(
+          fontWeight: FontWeight.bold,
+          fontSize: 20,
+          color: Colors.white,
+        ),
+        ),
         actions: <Widget>[
           IconButton(
             icon: const Icon(Icons.edit),
@@ -52,12 +59,14 @@ class WorkoutScreen extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 10.0),
+          padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 8.0),
           child: Text(
             capitalize(task.title),
-            style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
+            style: const TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 22, // Increased font size
+              color: steelBlue, // Changed font color
+            ),
             textAlign: TextAlign.right,
           ),
         ),
@@ -67,8 +76,13 @@ class WorkoutScreen extends StatelessWidget {
         SizedBox(
           height: 300,
           child: Card(
+            color: Colors.lightBlue[100],
             child: ListTile(
-              title: const Text('Details:'),
+              title: const Text('Details:',
+    style: TextStyle(// Changed title color in ListTile
+    fontWeight: FontWeight.bold, // Increased title font weight
+    ),
+    ),
               subtitle: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
@@ -86,6 +100,7 @@ class WorkoutScreen extends StatelessWidget {
       // Add some padding around the button
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
+          backgroundColor: cornflowerBlue,
           minimumSize: const Size.fromHeight(50), // Set the button's height
           shape: RoundedRectangleBorder(
             borderRadius:
@@ -107,7 +122,7 @@ class WorkoutScreen extends StatelessWidget {
         },
         child: const Text(
           'Focus Mode',
-          style: TextStyle(fontSize: 20), // Optional: Set your TextStyle
+          style: TextStyle(fontSize: 20, fontWeight: FontWeight.w400, color: Colors.white), // Optional: Set your TextStyle
         ),
       ),
     ),);

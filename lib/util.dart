@@ -1,5 +1,14 @@
 import 'package:flutter/material.dart';
 
+// Define the color palette
+const Color lightSkyBlue = Color(0xFF87CEFA);
+const Color cornflowerBlue = Color(0xFF6495ED);
+const Color mediumSeaGreen = Color(0xFF3CB371);
+const Color paleGreen = Color(0xFF98FB98);
+const Color steelBlue = Color(0xFF4682B4);
+const Color darkGray = Color(0xFFA9A9A9);
+const Color lightGray = Color(0xFFD3D3D3);
+
 int timeOfDayToMinutes(TimeOfDay time) {
   return time.hour * 60 + time.minute;
 }

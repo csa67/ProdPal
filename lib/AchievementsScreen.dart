@@ -1,30 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:hci/util.dart';
 
 class AchievementsScreen extends StatelessWidget {
   final List<Achievement> achievements = [
     Achievement(
       title: 'First Step',
       icon: 'assets/mental-health.png',
-      description: 'Complete your first task',
+      description: 'Record your first mood.',
       isUnlocked: true,
     ),
     Achievement(
-      title: 'Hot Auction',
-      icon: 'assets/mood.png',
-      description: 'Participate in your first auction',
-      isUnlocked: false,
-    ),
-    Achievement(
-      title: 'Hot Auction',
+      title: 'Task Titan',
       icon: 'assets/trophy.png',
-      description: 'Participate in your first auction',
+      description: 'Complete 10 tasks.',
       isUnlocked: false,
     ),
     Achievement(
-      title: 'Hot Auction',
+      title: 'Wellness Warrior',
+      icon: 'assets/mood.png',
+      description: 'Consistent mood tracking for more than a week.',
+      isUnlocked: false,
+    ),
+    Achievement(
+      title: 'Silver Lining Scout',
       icon: 'assets/sunflower.png',
-      description: 'Participate in your first auction',
+      description: 'Maintaining ',
       isUnlocked: false,
     ),
     Achievement(
@@ -60,7 +61,8 @@ class AchievementsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Achievements'),
+        title: const Text('Achievements', style: TextStyle(color: Colors.white),),
+        backgroundColor: steelBlue,
       ),
       body: GridView.builder(
         padding: const EdgeInsets.all(8.0),
@@ -101,7 +103,7 @@ class AchievementCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      color: achievement.isUnlocked ? Colors.pink[100] : Colors.grey[300],
+      color: achievement.isUnlocked ? paleGreen: lightGray,
       elevation: 4.0,
       child: Container(
         padding: const EdgeInsets.all(10.0), // Fixed minimum height for the card
@@ -112,15 +114,14 @@ class AchievementCard extends StatelessWidget {
             Image.asset(
               achievement.icon,
               width: 100.0, // Adjust the size as needed
-              color: achievement.isUnlocked ? null : Colors.grey,
+              color: achievement.isUnlocked ? null : darkGray,
             ),
             const SizedBox(height: 8),
             Text(
               achievement.title,
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 18, // Adjust the font size as needed
                 fontWeight: FontWeight.bold,
-                color: achievement.isUnlocked ? Colors.black : Colors.grey,
               ),
             ),
             const SizedBox(height: 8),

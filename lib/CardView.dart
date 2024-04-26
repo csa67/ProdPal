@@ -99,8 +99,16 @@ class _TasksListState extends State<TasksList> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        backgroundColor: lightSkyBlue,
         appBar: AppBar(
-          title: Text((DateFormat('MMMM yyyy')).format(_selectedDate)),
+          backgroundColor: steelBlue,
+          title: Text((DateFormat('MMMM yyyy')).format(_selectedDate),
+            style: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+              fontSize: 20, // Increased font size
+            ),),
+
           actions: [
             IconButton(
               icon: const Icon(Icons.calendar_today),
@@ -335,6 +343,7 @@ class TaskCard extends StatelessWidget {
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10.0),
                 ),
+                color: paleGreen,
                 elevation: 4.0,
                 child: InkWell(
                   onTap: () {
@@ -352,10 +361,15 @@ class TaskCard extends StatelessWidget {
                       children: [
                         Text(
                           item.title,
-                          style: const TextStyle(fontWeight: FontWeight.bold),
+                          style: const TextStyle(fontWeight: FontWeight.bold,
+                          fontSize: 18, color: steelBlue),
                         ),
                         Text(
-                            "${_formatTimeOfDay(startTime)} - ${_formatTimeOfDay(endTime)}"),
+                            "${_formatTimeOfDay(startTime)} - ${_formatTimeOfDay(endTime)}",
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w200
+                        ),),
                       ],
                     ),
                   ),
@@ -395,7 +409,11 @@ class DateCard extends StatelessWidget {
         child: Text(
           DateFormat('E\nd').format(date),
           textAlign: TextAlign.center,
-          style: TextStyle(color: isSelected ? Colors.white : Colors.black),
+          style: TextStyle(
+              color: isSelected ? Colors.white : Colors.black,
+              fontWeight: isSelected ? FontWeight.bold :  FontWeight.normal,
+              fontSize: isSelected? 16:14,
+          ),
         ),
       ),
     );
